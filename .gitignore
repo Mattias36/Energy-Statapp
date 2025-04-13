@@ -3,4 +3,5 @@ __pycache__/
 db.sqlite3
 .env
 *.pyc
-/migrations/
+**/migrations/
+!**/migrations/__init__.py
