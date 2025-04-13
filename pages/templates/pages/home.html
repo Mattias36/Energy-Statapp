@@ -1,4 +1,27 @@
 {% extends "base.html" %}
 {% block page_content %}
-<h1>Hello World</h1>
+<h1>Energy Production - {{ year }}</h1>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Country</th>
+            <th>Category</th>
+            <th>Source</th>
+            <th>Value</th>
+            <th>Unit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in data %}
+        <tr>
+            <td>{{ record.country.name }}</td>
+            <td>{{ record.category.name }}</td>
+            <td>{{ record.source.name }}</td>
+            <td>{{ record.value }}</td>
+            <td>{{ record.source.unit }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock page_content %}
