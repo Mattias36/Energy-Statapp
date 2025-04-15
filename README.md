@@ -33,7 +33,8 @@ Celem projektu jest stworzenie interaktywnego systemu, który umożliwia użytko
 
 **ERD Diagram**
 ```mermaid
-COUNTRIES {
+erDiagram
+    COUNTRIES {
         integer id
         varchar name
         varchar code
@@ -46,18 +47,18 @@ COUNTRIES {
     ENERGY_CATEGORIES {
         integer id
         varchar name
-        integer NN domain_id
+        integer domain_id
     }
     ENERGY_SOURCES {
         integer id
         varchar name
-        integer NN category_id
+        integer category_id
         integer parent_id
     }
     ENERGY_DATA {
         integer id
-        integer NN country_id 
-        integer NN source_id 
+        integer country_id
+        integer source_id
         integer year
         float value
     }
