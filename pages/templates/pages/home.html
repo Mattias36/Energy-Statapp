@@ -1,27 +1,100 @@
 {% extends "base.html" %}
 {% block page_content %}
-<h1>Energy Production - {{ year }}</h1>
+{% load custom_filter %}
+
+<h1>Energy Production </h1>
+
+<!-- Pasek krajów -->
+<div style="margin-bottom: 20px;">
+    {% for country in countries %}
+    <a href="?country={{ country.code }}">
+        {{ country.name }}
+    </a>
+    {% endfor %}
+</div>
+
+<!-- Tabela -->
 
 <table border="1" cellpadding="5">
     <thead>
         <tr>
-            <th>Country</th>
-            <th>Category</th>
-            <th>Source</th>
-            <th>Value</th>
-            <th>Unit</th>
+            <th>Energy Source</th>
+            {% for year in years %}
+            <th>{{ year }}</th>
+            {% endfor %}
         </tr>
     </thead>
     <tbody>
-        {% for record in data %}
+        {% for source, values_by_year in table.items %}
         <tr>
-            <td>{{ record.country.name }}</td>
-            <td>{{ record.category.name }}</td>
-            <td>{{ record.source.name }}</td>
-            <td>{{ record.value }}</td>
-            <td>{{ record.source.unit }}</td>
+            <td>{{ source }}</td>
+            {% for year in years %}
+            <td>{{ values_by_year|get_item:year|floatformat:3|default:"–" }}</td>
+            {% endfor %}
         </tr>
         {% endfor %}
+        <tr style="font-weight: bold;">
+            <td colspan="1">Total</td>
+            {% for year in years %}
+            <td>{{ total_by_year|get_item:year|floatformat:3|default:"-" }}</td>
+
+            {% endfor %}
+        </tr>
+
     </tbody>
 </table>
+
+<h2>Total Production Chart (Mtoe)</h2>
+<label for="yearRange">Select year range:</label>
+<input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}" value="{{ total_years|length|add:"
+    -1" }}" step="1" oninput="updateChartRange(this.value)">
+<span id="selectedRangeLabel">All years</span>
+
+<canvas id="totalChart" width="800" height="400"></canvas>
+{{ total_years|json_script:"total-years" }}
+{{ total_values|json_script:"total-values" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const allYears = JSON.parse(document.getElementById('total-years').textContent);
+    const allValues = JSON.parse(document.getElementById('total-values').textContent);
+    let chart;
+
+    function drawChart(displayYears, displayValues) {
+        const ctx = document.getElementById('totalChart').getContext('2d');
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: displayYears,
+                datasets: [{
+                    label: 'Total Production (Mtoe)',
+                    data: displayValues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function updateChartRange(maxIndex) {
+        const selectedYears = allYears.slice(0, parseInt(maxIndex) + 1);
+        const selectedValues = allValues.slice(0, parseInt(maxIndex) + 1);
+        drawChart(selectedYears, selectedValues);
+        document.getElementById('selectedRangeLabel').innerText =
+            selectedYears.length > 1
+                ? `${selectedYears[0]} - ${selectedYears[selectedYears.length - 1]}`
+                : `${selectedYears[0]}`;
+    }
+
+    updateChartRange(allYears.length - 1);
+</script>
+
 {% endblock page_content %}

@@ -21,7 +21,7 @@ def run():
 
     file_path = r'data\Energy statistical country datasheets 2024-04 for web.xlsx'
     df = pd.read_excel(file_path,
-                       sheet_name='PL', skiprows=7, usecols=range(2, 35), header=None)
+                       sheet_name='CZ', skiprows=7, usecols=range(2, 35), header=None)  # zmiana sheet name na jakiś z arkusza
 
     years = df.iloc[0, 1:].astype(int).tolist()
     df = df[4:].copy()
@@ -43,14 +43,16 @@ def run():
     df.reset_index(drop=True, inplace=True)
 
     # Kraj – poprawka na kod
-    country, created = Country.objects.get_or_create(name='Poland')
+    country, created = Country.objects.get_or_create(
+        name='Czechia')  # tu zmienić na kraj
     if created or not country.code:
-        country.code = 'PL'
+        country.code = 'CZ'  # tu na kod kraju
         country.save()
 
-    domain, _ = EnergyDomain.objects.get_or_create(name='Energy Balance')
+    domain, _ = EnergyDomain.objects.get_or_create(
+        name='Energy Balance')  # nazwa domeny
     category, _ = EnergyCategory.objects.get_or_create(
-        name='Production', domain=domain)
+        name='Production', domain=domain)  # nazwa kategorii
 
     hierarchy = {
         "Solid fossil fuels": ["of which hard coal", "of which brown coal"],
