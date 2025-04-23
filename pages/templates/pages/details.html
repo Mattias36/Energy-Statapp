@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block page_content %}
+{% load custom_filter %}
+
+<h1>Energy Production for {{ selected_country }}</h1>
+<p><a href="{% url 'home' %}">← Back to country list</a></p>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Energy Source</th>
+            {% for year in years %}
+            <th>{{ year }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for source, values_by_year in table.items %}
+        <tr>
+            <td>{{ source }}</td>
+            {% for year in years %}
+            <td>{{ values_by_year|get_item:year|floatformat:3|default:"–" }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        <tr style="font-weight: bold;">
+            <td colspan="1">Total</td>
+            {% for year in years %}
+            <td>{{ total_by_year|get_item:year|floatformat:3|default:"-" }}</td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+
+<!-- graph param -->
+<h2>Total Production Chart (Mtoe)</h2>
+
+<label for="yearRange">Select Year Range:</label>
+<input type="range" id="yearRange" min="0" max="{{ total_years|length|add:"-1" }}" value="{{ total_years|length|add:"-1" }}" step="1" oninput="updateChartRange(this.value)">
+<span id="selectedRangeLabel">All years</span>
+
+<label for="graph_type">Select Graph Type:</label>
+<select name="graph_type" id="graph_type">
+    <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Bar</option>
+    <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Line</option>
+</select>
+
+<button id="generateGraphButton">Generate Graph</button>
+<button id="savePdfButton">Save to PDF</button>
+
+<div id="graphContainer" style="display:none; margin-top: 20px;">
+    <canvas id="totalChart" width="800" height="400"></canvas>
+    {{ total_years|json_script:"total-years" }}
+    {{ total_values|json_script:"total-values" }}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const allYears = JSON.parse(document.getElementById('total-years').textContent);
+        const allValues = JSON.parse(document.getElementById('total-values').textContent);
+        let chart;
+
+        function drawChart(displayYears, displayValues, chartType) {
+            const ctx = document.getElementById('totalChart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: displayYears,
+                    datasets: [{
+                        label: 'Total Production (Mtoe)',
+                        data: displayValues,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChartRange(maxIndex) {
+            const selectedYears = allYears.slice(0, parseInt(maxIndex) + 1);
+            const selectedValues = allValues.slice(0, parseInt(maxIndex) + 1);
+            drawChart(selectedYears, selectedValues, document.getElementById('graph_type').value);
+            document.getElementById('selectedRangeLabel').innerText =
+                selectedYears.length > 1
+                    ? `${selectedYears[0]} - ${selectedYears[selectedYears.length - 1]}`
+                    : `${selectedYears[0]}`;
+        }
+
+        document.getElementById('generateGraphButton').addEventListener('click', function () {
+            const selectedGraphType = document.getElementById('graph_type').value;
+            const selectedYearRange = document.getElementById('yearRange').value;
+            const selectedYears = allYears.slice(0, parseInt(selectedYearRange) + 1);
+            const selectedValues = allValues.slice(0, selectedYears.length);
+
+            drawChart(selectedYears, selectedValues, selectedGraphType);
+            document.getElementById('graphContainer').style.display = 'block';
+        });
+
+        document.getElementById('savePdfButton').addEventListener('click', function () {
+            const chartContainer = document.getElementById('graphContainer');
+
+            if (chartContainer.style.display === 'none') {
+                alert('Please generate the chart first.');
+                return;
+            }
+
+            chartContainer.scrollIntoView({ behavior: "smooth" });
+
+            html2canvas(chartContainer).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+
+                const imgWidth = 190;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                pdf.save('energy_production_chart.pdf');
+            });
+        });
+
+        // ?+ chart options, chart name
+        updateChartRange(allYears.length - 1);
+    });
+</script>
+
+{% endblock page_content %}
