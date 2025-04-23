@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from .models import EnergyData, Country
-
+from collections import defaultdict
 
 def home(request):
     countries = Country.objects.all()
     return render(request, "pages/home.html", {'countries': countries})
 
 # funkcjonalnosc home() przeniesiono w country_view().
+from utils.stats import get_latest_value, get_trend_percentage, format_gas_trend, format_nuclear_status
 def country_view(request, country_code):
     countries = Country.objects.all()
     selected_country = Country.objects.get(code=country_code)
@@ -25,18 +26,19 @@ def country_view(request, country_code):
             table[source] = {}
         table[source][year] = value
 
-    from collections import defaultdict
     total_by_year = defaultdict(float)
     for record in data:
         total_by_year[record.year] += record.value
 
-    # param for graph
-    graph_type = request.GET.get('graph_type', 'bar')  # 'bar' -- default
-    year_range = request.GET.get('year_range', None)
+    # get_lates_value zwraca (year, value), dlatego "_" --> year jesli trzeba
+    _, nuclear_latest = get_latest_value(data, "Nuclear")
+    nuclear_status = format_nuclear_status(nuclear_latest, total_by_year.get(years[-1], 0))
 
-    if year_range:
-        year_range = list(map(int, year_range.split(',')))
-        data = [d for d in data if d.year in year_range]
+    gas_trend = get_trend_percentage(data, "Natural gas")
+    gas_status = format_gas_trend(gas_trend)
+
+    _, renewable_total = get_latest_value(data, "Renewables and biofuels")
+    _, waste_total = get_latest_value(data, "Wastes, Non-Renewable")
 
     context = {
         'countries': countries,
@@ -46,10 +48,14 @@ def country_view(request, country_code):
         'total_by_year': total_by_year,
         'total_years': [y for y in years if y in total_by_year],
         'total_values': [round(total_by_year[y], 3) for y in years if y in total_by_year],
-        'graph_type': graph_type,
-        'year_range': year_range,
+        'graph_type': request.GET.get('graph_type', 'bar'),
+        'year_range': request.GET.get('year_range'),
+        # ewentualnie mozna przeniesiesc Insights (nuclear_status, gas_status, etc.) do osobnego kontekstu lub struktury
+        'nuclear_status': nuclear_status,
+        'gas_status': gas_status,
+        'renewable_total': round(renewable_total or 0, 3),
+        'waste_total': round(waste_total or 0, 3),
     }
     return render(request, "pages/details.html", context)
 
 # ?+ jesli wszystkie wiersze w tabeli sa puste nie wyswietlac caly wiersz
-
