@@ -36,7 +36,8 @@
 <h2>Total Production Chart (Mtoe)</h2>
 
 <label for="yearRange">Select Year Range:</label>
-<input type="range" id="yearRange" min="0" max="{{ total_years|length|add:"-1" }}" value="{{ total_years|length|add:"-1" }}" step="1" oninput="updateChartRange(this.value)">
+<input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}" value="{{ total_years|length|add:"
+    -1" }}" step="1" oninput="updateChartRange(this.value)">
 <span id="selectedRangeLabel">All years</span>
 
 <label for="graph_type">Select Graph Type:</label>
@@ -53,6 +54,16 @@
     {{ total_years|json_script:"total-years" }}
     {{ total_values|json_script:"total-values" }}
 </div>
+<form id="compareForm">
+    <label for="compareCountries">Compare with other countries:</label>
+    <select id="compareCountries" name="compare_countries" multiple>
+        {% for country in countries %}
+            {% if country.name != selected_country %}
+                <option value="{{ country.code }}">{{ country.name }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</form>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -103,10 +114,38 @@
             const selectedYearRange = document.getElementById('yearRange').value;
             const selectedYears = allYears.slice(0, parseInt(selectedYearRange) + 1);
             const selectedValues = allValues.slice(0, selectedYears.length);
+            const compareCountries = Array.from(document.getElementById('compareCountries').selectedOptions)
+                                          .map(option => option.value);
 
             drawChart(selectedYears, selectedValues, selectedGraphType);
+
+            // Add comparison countries
+            if (compareCountries.length > 0) {
+                fetch(`/compare_data/?${new URLSearchParams({ 'countries[]': compareCountries })}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        for (const [countryName, countryData] of Object.entries(data)) {
+                            const { years, values } = countryData;
+                        
+                            chart.data.datasets.push({
+                                label: `Total (${countryName})`,
+                                data: values,
+                                borderColor: getRandomColor(),
+                                backgroundColor: 'rgba(75, 192, 192, 0.9)',
+                                fill: false,
+                                tension: 0.1,
+                            });
+                        }
+                        chart.update();
+                    });
+            }
+        
             document.getElementById('graphContainer').style.display = 'block';
-        });
+        });     
+
+        function getRandomColor() {
+            return 'hsl(' + 360 * Math.random() + ', 70%, 50%)';
+        }
 
         document.getElementById('savePdfButton').addEventListener('click', function () {
             const chartContainer = document.getElementById('graphContainer');

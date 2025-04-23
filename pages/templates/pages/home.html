@@ -3,15 +3,30 @@
 <h1>Select a Country</h1>
 
 <!-- home jako menu + searchbar dla wyszukiwania panstw, searchbar pozniej zamienic interaktywna karta? -->
-<input type="text" id="countrySearch" placeholder="Search for a country..." style="margin-bottom: 10px; padding: 5px; width: 100%; max-width: 400px;">
+<input type="text" id="countrySearch" placeholder="Search for a country..."
+    style="margin-bottom: 10px; padding: 5px; width: 100%; max-width: 400px;">
 
-<ul id="countryList" style="display: none;">
+<ul id="countryList">
     {% for country in countries %}
-        <li>
-            <a href="{% url 'country_view' country.code %}">{{ country.name }}</a>
-        </li>
+    <li>
+        <a href="{% url 'country_view' country.code %}?category={{ selected_category_id }}">{{ country.name }}</a>
+    </li>
     {% endfor %}
 </ul>
+
+<h2>Select a Category</h2>
+<form method="get" id="categoryForm">
+    <select name="category">
+        {% for category in categories %}
+          <option value="{{ category.id }}" {% if category.id == selected_category_id %}selected{% endif %}>
+            {{ category.name }}
+          </option>
+        {% endfor %}
+      </select>
+</form>
+
+
+
 
 <script>
     const searchInput = document.getElementById('countrySearch');
