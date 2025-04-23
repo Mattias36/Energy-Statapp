@@ -1,0 +1,155 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0057b7;
+    padding: 1rem 2rem;
+    color: white;
+}
+
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-links li a:hover {
+    text-decoration: underline;
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: #e0f0ff;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+}
+
+.info-section {
+    padding: 2rem;
+    background-color: #ffffff;
+    margin: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.country-selector {
+    padding: 2rem;
+    text-align: center;
+}
+
+.countries {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.country-link {
+    background-color: #0057b7;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.country-link:hover {
+    background-color: #003580;
+}
+
+.data-table {
+    padding: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+thead {
+    background-color: #0057b7;
+    color: white;
+}
+
+.total-row {
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
+
+.chart-section {
+    padding: 2rem;
+    background-color: #ffffff;
+    margin: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #0057b7;
+    color: white;
+    margin-top: 2rem;
+}
+
+.image img {
+    max-width: 30%; /* Zapewnia, że obrazek będzie responsywny */
+    border-radius: 10px; /* Dodanie zaokrąglonych rogów do obrazka */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Dodanie delikatnego cienia do obrazka */
+}
+
+.reverse .image {
+    order: 1;
+}
+
+/* Ograniczenie wielkości zdjęcia w sekcji Misja i Wartości */
+.reverse .image img {
+    max-width: 250px;
+}
+
+
+.map-container {
+    width: 100%;
+    max-width: 600px; /* Maximum width of the container */
+    margin: auto; /* Center the container */
+    position: relative;
+    overflow: hidden;
+    padding-top: 30%; /* Adjust this value for a taller map, e.g., 75% */
+}
+
+/* Style for iframe (Google Maps) */
+iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0; /* Remove border */
+}
