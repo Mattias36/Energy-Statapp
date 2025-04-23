@@ -1,22 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Statistic App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
 
-    <title>Energy_Statistic</title>
+    <!-- Pasek nawigacji -->
+    <nav class="navbar">
+        <div class="logo">Energy Statistic App</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#countries">Countries</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
+    <!-- Główna treść -->
+    <main class="content">
+        {% block page_content %}{% endblock %}
+    </main>
 
-<body class="container">
-    {% block page_content %}
-
-
-    {% endblock page_content %}
+    <!-- Stopka -->
+    <footer class="footer">
+        <p>&copy; 2025 Energy Statistic App. All rights reserved.</p>
+    </footer>
 
 </body>
-
-
 </html>
+
+

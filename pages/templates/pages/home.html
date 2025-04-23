@@ -1,100 +1,200 @@
 {% extends "base.html" %}
-{% block page_content %}
+{% load static %}
 {% load custom_filter %}
 
-<h1>Energy Production </h1>
+{% block page_content %}
+
+<!-- Sekcja Powitalna -->
+<section class="hero">
+    <div class="hero-content">
+      <h1>Witamy w Energy Statistic App</h1>
+      <p>Odkrywaj szczegółowe dane na temat produkcji i konsumpcji energii w Europie.</p>
+    </div>
+  </section>
+  
+<!-- Sekcja O Nas -->
+<section id="about" class="info-section">
+    <h2>O projekcie</h2>
+    <p><strong>Energy Statistic App</strong> pomaga Ci odkrywać dane energetyczne z krajów europejskich.</p>
+  
+    <h3>Gdzie jesteśmy?</h3>
+    <p>Nasze biuro znajduje się w sercu Wrocławia, w Polsce.</p>
+  
+    <div class="container">
+      <div class="section">
+        <h2>Adres</h2>
+        <p><strong>Energy Statistic App Office</strong></p>
+        <p><span>📍</span> ul. Świdnicka 12<br>50-067 Wrocław, Polska</p>
+        <p><span>☎️</span> +48 123 456 789</p>
+        <p><span>✉️</span> <a href="mailto:kontakt@energyapp.pl">kontakt@energyapp.pl</a></p>
+      </div>
+  
+      <div class="section">
+        <h2>Znajdź nas na mapie</h2>
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2419.6813940162826!2d17.03334851572278!3d51.10792381831948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc20b6cd941e1%3A0x30a163b8599a5a6!2s%C5%9Awidnicka+12%2C+50-067+Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1673032492481!5m2!1spl!2spl"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            style="border: 0;">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+ <!-- Wizualizacja biura -->
+<section class="info-section">
+  <h2>Nasze biuro</h2>
+  <div class="content">
+      <div class="text">
+          <p>Nasze biuro w centrum Wrocławia to przestrzeń, w której kreatywność i współpraca są na pierwszym miejscu. W naszym biurze, które łączy nowoczesność i funkcjonalność, zapewniamy przyjazne środowisko pracy.</p>
+      </div>
+      <div class="image">
+        <img src="{% static 'images/office1.jpg' %}" alt="Zewnętrzny widok biurowca">
+      </div>
+  </div>
+</section>
+
+<!-- Firma -->
+<section class="info-section">
+  <h2>Nasza misja</h2>
+  <div class="content">
+      <div class="text">
+        <p>Naszą misją jest udostępnianie przejrzystych i dokładnych danych energetycznych, które pozwalają na podejmowanie świadomych decyzji w różnych sektorach.</p>
+      </div>
+      <div class="image">
+        <img src="{% static 'images/office2.jpg' %}" alt="Nowoczesne wnętrze biura">
+      </div>
+  </div>
+</section>
+
+<!-- Sekcja Co Oferujemy -->
+<section id="offer" class="info-section">
+  <h2>Co oferujemy</h2>
+  <ul>
+    <li><strong>Interaktywne wykresy:</strong> Dynamiczne wizualizacje z wykorzystaniem Chart.js.</li>
+    <li><strong>Prognoza zużycia energii:</strong> Wykorzystanie zaawansowanych modeli regresyjnych.</li>
+    <li><strong>Międzynarodowe porównania:</strong> Porównaj dane energetyczne między krajami.</li>
+    <li><strong>Możliwość wgrywania danych:</strong> Importuj własne pliki Excel/CSV do analizy.</li>
+    <li><strong>Integracja z API:</strong> Uzyskaj dostęp do danych w czasie rzeczywistym z zewnętrznych źródeł.</li>
+    <li><strong>Generowanie raportów PDF:</strong> Twórz raporty do pobrania.</li>
+    <li><strong>Panel użytkownika:</strong> Zapisuj preferencje i historię zapytań.</li>
+  </ul>
+</section>
 
 <!-- Pasek krajów -->
-<div style="margin-bottom: 20px;">
+<section class="country-selector">
+  <h2>Przeglądaj po krajach</h2>
+  <div class="countries">
     {% for country in countries %}
-    <a href="?country={{ country.code }}">
+      <a href="?country={{ country.code }}" class="country-link {% if country.code == selected_country %}selected{% endif %}">
         {{ country.name }}
-    </a>
+      </a>
     {% endfor %}
-</div>
+  </div>
+</section>
 
-<!-- Tabela -->
-
-<table border="1" cellpadding="5">
-    <thead>
+<!-- Tabela z danymi -->
+<section class="data-table">
+  <h2>Dane produkcji energii</h2>
+  {% if selected_country %}
+    <p>Wyświetlanie danych dla <strong>{{ selected_country }}</strong></p>
+    <table>
+      <thead>
         <tr>
-            <th>Energy Source</th>
-            {% for year in years %}
+          <th>Źródło energii</th>
+          {% for year in years %}
             <th>{{ year }}</th>
-            {% endfor %}
+          {% endfor %}
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
         {% for source, values_by_year in table.items %}
         <tr>
-            <td>{{ source }}</td>
-            {% for year in years %}
+          <td>{{ source }}</td>
+          {% for year in years %}
             <td>{{ values_by_year|get_item:year|floatformat:3|default:"–" }}</td>
-            {% endfor %}
+          {% endfor %}
         </tr>
         {% endfor %}
-        <tr style="font-weight: bold;">
-            <td colspan="1">Total</td>
-            {% for year in years %}
-            <td>{{ total_by_year|get_item:year|floatformat:3|default:"-" }}</td>
-
-            {% endfor %}
+        <tr class="total-row">
+          <td>Łącznie</td>
+          {% for year in years %}
+            <td>{{ total_by_year|get_item:year|floatformat:3|default:"–" }}</td>
+          {% endfor %}
         </tr>
+      </tbody>
+    </table>
+  {% else %}
+    <p>Wybierz kraj, aby wyświetlić dane.</p>
+  {% endif %}
+</section>
 
-    </tbody>
-</table>
+<!-- Wykres całkowitej produkcji -->
+<section class="chart-section">
+  <h2>Wykres całkowitej produkcji (Mtoe)</h2>
+  {% if total_years %}
+    <label for="yearRange">Wybierz zakres lat:</label>
+    <input
+      type="range"
+      id="yearRange"
+      min="0"
+      max="{{ total_years|length|add:"-1" }}"
+      value="{{ total_years|length|add:"-1" }}"
+      step="1"
+      oninput="updateChartRange(this.value)">
+    <span id="selectedRangeLabel">Wszystkie lata</span>
 
-<h2>Total Production Chart (Mtoe)</h2>
-<label for="yearRange">Select year range:</label>
-<input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}" value="{{ total_years|length|add:"
-    -1" }}" step="1" oninput="updateChartRange(this.value)">
-<span id="selectedRangeLabel">All years</span>
+    <canvas id="totalChart" width="800" height="400"></canvas>
+    {{ total_years|json_script:"total-years" }}
+    {{ total_values|json_script:"total-values" }}
+  {% else %}
+    <p>Brak danych dla wybranego kraju.</p>
+  {% endif %}
+</section>
 
-<canvas id="totalChart" width="800" height="400"></canvas>
-{{ total_years|json_script:"total-years" }}
-{{ total_values|json_script:"total-values" }}
+<!-- Skrypt do wykresu -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    const allYears = JSON.parse(document.getElementById('total-years').textContent);
-    const allValues = JSON.parse(document.getElementById('total-values').textContent);
-    let chart;
+  const allYears = JSON.parse(document.getElementById('total-years').textContent);
+  const allValues = JSON.parse(document.getElementById('total-values').textContent);
+  let chart;
 
-    function drawChart(displayYears, displayValues) {
-        const ctx = document.getElementById('totalChart').getContext('2d');
-        if (chart) chart.destroy();
-        chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: displayYears,
-                datasets: [{
-                    label: 'Total Production (Mtoe)',
-                    data: displayValues,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
+  function drawChart(displayYears, displayValues) {
+    const ctx = document.getElementById('totalChart').getContext('2d');
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: displayYears,
+        datasets: [{
+          label: 'Całkowita produkcja (Mtoe)',
+          data: displayValues,
+          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
 
-    function updateChartRange(maxIndex) {
-        const selectedYears = allYears.slice(0, parseInt(maxIndex) + 1);
-        const selectedValues = allValues.slice(0, parseInt(maxIndex) + 1);
-        drawChart(selectedYears, selectedValues);
-        document.getElementById('selectedRangeLabel').innerText =
-            selectedYears.length > 1
-                ? `${selectedYears[0]} - ${selectedYears[selectedYears.length - 1]}`
-                : `${selectedYears[0]}`;
-    }
+  function updateChartRange(maxIndex) {
+    const selectedYears = allYears.slice(0, parseInt(maxIndex) + 1);
+    const selectedValues = allValues.slice(0, parseInt(maxIndex) + 1);
+    drawChart(selectedYears, selectedValues);
+    document.getElementById('selectedRangeLabel').innerText =
+      selectedYears.length > 1
+        ? `${selectedYears[0]} - ${selectedYears[selectedYears.length - 1]}`
+        : `${selectedYears[0]}`;
+  }
 
-    updateChartRange(allYears.length - 1);
+  updateChartRange(allYears.length - 1);
 </script>
 
-{% endblock page_content %}
+{% endblock %}
