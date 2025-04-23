@@ -1,9 +1,27 @@
 {% extends "base.html" %}
 {% block page_content %}
 {% load custom_filter %}
-
-<h1>Energy Production for {{ selected_country }}</h1>
 <p><a href="{% url 'home' %}">← Back to country list</a></p>
+<h1>Energy Production for {{ selected_country }}</h1>
+<!-- kontener do rozwijania – może zawierać wszystko, ale można też pokazywać tylko najistotniejsze informacje, tzw. "Insights"
+     (np. jak na stronie: https://stockunlock.com/stockDetails/AMZN/insights) -->
+
+<div class="insights">
+{#    <h2>Energy Summary Overview</h2>#}
+    <div style="margin-bottom: 10px;">
+        <strong>Nuclear Investment Status:</strong> {{ nuclear_status|safe }}
+    </div>
+    <div style="margin-bottom: 10px;">
+        <strong>Natural Gas Trend:</strong> {{ gas_status|safe }}
+    </div>
+    <div style="margin-bottom: 10px;">
+        <strong>Total Renewables (Latest Year):</strong> <span>{{ renewable_total }}</span>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <strong>Waste / Non-Renewable Waste:</strong> <span>{{ waste_total }}</span>
+    </div>
+</div>
+
 
 <table border="1" cellpadding="5">
     <thead>
@@ -47,7 +65,7 @@
 </select>
 
 <button id="generateGraphButton">Generate Graph</button>
-<button id="savePdfButton">Save to PDF</button>
+<button id="saveImageButton">Save</button>
 
 <div id="graphContainer" style="display:none; margin-top: 20px;">
     <canvas id="totalChart" width="800" height="400"></canvas>
@@ -147,30 +165,30 @@
             return 'hsl(' + 360 * Math.random() + ', 70%, 50%)';
         }
 
-        document.getElementById('savePdfButton').addEventListener('click', function () {
-            const chartContainer = document.getElementById('graphContainer');
+document.getElementById('saveImageButton').addEventListener('click', function () {
+    const chartContainer = document.getElementById('graphContainer');
 
-            if (chartContainer.style.display === 'none') {
-                alert('Please generate the chart first.');
-                return;
-            }
+    if (chartContainer.style.display === 'none') {
+        alert('Proszę najpierw wygenerować wykres do pobrania');
+        return;
+    }
 
-            chartContainer.scrollIntoView({ behavior: "smooth" });
+    chartContainer.scrollIntoView({ behavior: "smooth" });
 
-            html2canvas(chartContainer).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF();
+    html2canvas(chartContainer).then(canvas => {
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            // temp link element for download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'energy_production_chart.png';
+            link.click();
+            // revoke Blob URL
+            URL.revokeObjectURL(url);
+        }, 'image/png');
+    });
+});
 
-                const imgWidth = 190;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-                pdf.save('energy_production_chart.pdf');
-            });
-        });
-
-        // ?+ chart options, chart name
         updateChartRange(allYears.length - 1);
     });
 </script>
