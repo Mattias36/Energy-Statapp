@@ -98,7 +98,7 @@ def compare_data(request):
     country_codes = request.GET.getlist('countries[]')
     category_name = 'Production'
 
-    response_data = {}
+    response_data = []
 
     for code in country_codes:
         country = Country.objects.get(code=code)
@@ -112,9 +112,9 @@ def compare_data(request):
         sorted_years = sorted(total_by_year.keys())
         sorted_values = [round(total_by_year[y], 3) for y in sorted_years]
 
-        response_data[country.name] = {
-            'years': sorted_years,
-            'values': sorted_values
-        }    
+        response_data.append({
+            'name': country.name,
+            'total_values': sorted_values
+        })
 
-    return JsonResponse(response_data)
+    return JsonResponse(response_data, safe=False)

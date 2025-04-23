@@ -89,112 +89,12 @@
   <h2>Przeglądaj po krajach</h2>
   <div class="countries">
     {% for country in countries %}
-      <a href="?country={{ country.code }}" class="country-link {% if country.code == selected_country %}selected{% endif %}">
+    <a href="{% url 'country_view' country_code=country.code %}" class="country-link">
         {{ country.name }}
-      </a>
+    </a>
     {% endfor %}
   </div>
 </section>
 
-<!-- Tabela z danymi -->
-<section class="data-table">
-  <h2>Dane produkcji energii</h2>
-  {% if selected_country %}
-    <p>Wyświetlanie danych dla <strong>{{ selected_country }}</strong></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Źródło energii</th>
-          {% for year in years %}
-            <th>{{ year }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for source, values_by_year in table.items %}
-        <tr>
-          <td>{{ source }}</td>
-          {% for year in years %}
-            <td>{{ values_by_year|get_item:year|floatformat:3|default:"–" }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-        <tr class="total-row">
-          <td>Łącznie</td>
-          {% for year in years %}
-            <td>{{ total_by_year|get_item:year|floatformat:3|default:"–" }}</td>
-          {% endfor %}
-        </tr>
-      </tbody>
-    </table>
-  {% else %}
-    <p>Wybierz kraj, aby wyświetlić dane.</p>
-  {% endif %}
-</section>
-
-<!-- Wykres całkowitej produkcji -->
-<section class="chart-section">
-  <h2>Wykres całkowitej produkcji (Mtoe)</h2>
-  {% if total_years %}
-    <label for="yearRange">Wybierz zakres lat:</label>
-    <input
-      type="range"
-      id="yearRange"
-      min="0"
-      max="{{ total_years|length|add:"-1" }}"
-      value="{{ total_years|length|add:"-1" }}"
-      step="1"
-      oninput="updateChartRange(this.value)">
-    <span id="selectedRangeLabel">Wszystkie lata</span>
-
-    <canvas id="totalChart" width="800" height="400"></canvas>
-    {{ total_years|json_script:"total-years" }}
-    {{ total_values|json_script:"total-values" }}
-  {% else %}
-    <p>Brak danych dla wybranego kraju.</p>
-  {% endif %}
-</section>
-
-<!-- Skrypt do wykresu -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const allYears = JSON.parse(document.getElementById('total-years').textContent);
-  const allValues = JSON.parse(document.getElementById('total-values').textContent);
-  let chart;
-
-  function drawChart(displayYears, displayValues) {
-    const ctx = document.getElementById('totalChart').getContext('2d');
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: displayYears,
-        datasets: [{
-          label: 'Całkowita produkcja (Mtoe)',
-          data: displayValues,
-          backgroundColor: 'rgba(54, 162, 235, 0.7)',
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-  }
-
-  function updateChartRange(maxIndex) {
-    const selectedYears = allYears.slice(0, parseInt(maxIndex) + 1);
-    const selectedValues = allValues.slice(0, parseInt(maxIndex) + 1);
-    drawChart(selectedYears, selectedValues);
-    document.getElementById('selectedRangeLabel').innerText =
-      selectedYears.length > 1
-        ? `${selectedYears[0]} - ${selectedYears[selectedYears.length - 1]}`
-        : `${selectedYears[0]}`;
-  }
-
-  updateChartRange(allYears.length - 1);
-</script>
 
 {% endblock %}

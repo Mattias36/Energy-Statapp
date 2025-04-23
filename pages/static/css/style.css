@@ -153,3 +153,62 @@ iframe {
     height: 100%;
     border: 0; /* Remove border */
 }
+
+.detail-wrapper {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+}
+
+.insight-item {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.form-group {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.button-group button {
+    padding: 0.5rem 1rem;
+    background-color: #0057b7;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-group button:hover {
+    background-color: #003580;
+}
+
+#compareCountries {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.5rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
