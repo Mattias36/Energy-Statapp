@@ -8,6 +8,8 @@ def home(request):
 
 # funkcjonalnosc home() przeniesiono w country_view().
 from utils.stats import get_latest_value, get_trend_percentage, format_gas_trend, format_nuclear_status
+from utils.stats_average import stats_average
+
 def country_view(request, country_code):
     countries = Country.objects.all()
     selected_country = Country.objects.get(code=country_code)
@@ -56,6 +58,16 @@ def country_view(request, country_code):
         'renewable_total': round(renewable_total or 0, 3),
         'waste_total': round(waste_total or 0, 3),
     }
+
+    averages_by_source = stats_average()
+    country_rankings = {
+        source: next((entry for entry in entries if entry["country"] == selected_country.name), None)
+        for source, entries in averages_by_source.items()
+    }
+
+    context.update({
+        "country_rankings": country_rankings,
+    })
     return render(request, "pages/details.html", context)
 
 # ?+ jesli wszystkie wiersze w tabeli sa puste nie wyswietlac caly wiersz
