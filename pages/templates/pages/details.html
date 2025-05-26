@@ -73,26 +73,32 @@
     }
   </style>
 </head>
+
 <p><a href="{% url 'home' %}">← Back to country list</a></p>
 <h1>Energy Production for {{ selected_country }}</h1>
 <!-- kontener do rozwijania – może zawierać wszystko, ale można też pokazywać tylko najistotniejsze informacje, tzw. "Insights"
      (np. jak na stronie: https://stockunlock.com/stockDetails/AMZN/insights) -->
 
-<div class="insights">
-  <div class="tooltip">
-    <strong>Nuclear Investment Status:</strong> {{ nuclear_status|safe }}
+<!-- update for bubbles for better view --->
+<div class="insights bubble-grid">
+  <div class="bubble tooltip">
+    <strong>Nuclear Investment Status:</strong><br>
+    {{ nuclear_status|safe }}
     <span class="tooltiptext">Procentowy udział energii jądrowej w całkowitej produkcji energii danego kraju.</span>
   </div>
-  <div class="tooltip">
-    <strong>Natural Gas Trend:</strong> {{ gas_status|safe }}
+  <div class="bubble tooltip">
+    <strong>Natural Gas Trend:</strong><br>
+    {{ gas_status|safe }}
     <span class="tooltiptext">Roczna zmiana procentowa udziału gazu ziemnego w produkcji energii</span>
   </div>
-  <div class="tooltip">
-    <strong>Total Renewables (Latest Year):</strong> <span>{{ renewable_total }}</span>
+  <div class="bubble tooltip">
+    <strong>Total Renewables (Latest Year):</strong><br>
+    <span>{{ renewable_total }}</span>
     <span class="tooltiptext">Całkowita produkcja energii ze źródeł odnawialnych</span>
   </div>
-  <div class="tooltip">
-    <strong>Waste / Non-Renewable Waste:</strong> <span>{{ waste_total }}</span>
+  <div class="bubble tooltip">
+    <strong>Waste / Non-Renewable Waste:</strong><br>
+    <span>{{ waste_total }}</span>
     <span class="tooltiptext">Opis Waste / Non-Renewable Waste.</span>
   </div>
 </div>
@@ -133,6 +139,89 @@
     </tbody>
 </table>
 
+<div class="predictions">
+  <h3 style="text-align: center; margin-bottom: 20px;">Predicted Energy Usage</h3>
+  <div class="bubble-grid">
+      {% for source, info in future_usage.items %}
+      {# iteracja po wszystkich zrdolach energii i ich danych w future_usage , zmienne val_2025,20206#}
+      {% with val_2025=info.predictions.2025 val_2026=info.predictions.2026 %}
+      {% if val_2025 and val_2025 != 0 and val_2026 and val_2026 != 0 %}
+      <div class="bubble">
+          <strong>{{ source }}</strong><br>
+          <span class="
+              {% if val_2026 > val_2025 %}
+                up
+              {% elif val_2026 < val_2025 %}
+                down
+              {% else %}
+                neutral
+              {% endif %}
+            ">
+              {{ val_2025|floatformat:1 }} → {{ val_2026|floatformat:1 }}
+            </span>
+          <span class="tooltiptext">{{ info.tooltip }}</span>
+      </div>
+      {% endif %}
+      {% endwith %}
+      {% endfor %}
+  </div>
+</div>
+
+<style>
+.bubble-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+  gap: 20px;
+  justify-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.bubble {
+  background-color: #eef3fa;
+  border: 2px solid #d0dbe8;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  position: relative;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 160px;
+}
+
+.bubble:hover {
+  transform: scale(1.05);
+  background-color: #dde8f7;
+}
+
+.bubble .tooltiptext {
+  visibility: hidden;
+  white-space: pre-line;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  min-width: 150px;
+}
+
+.bubble:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+
+
 
 <table border="1" cellpadding="5">
     <thead>
@@ -160,6 +249,9 @@
         </tr>
     </tbody>
 </table>
+
+
+
 
 <!-- graph param -->
 <h2>Total Production Chart (Mtoe)</h2>

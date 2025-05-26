@@ -9,6 +9,7 @@ def home(request):
 # funkcjonalnosc home() przeniesiono w country_view().
 from utils.stats import get_latest_value, get_trend_percentage, format_gas_trend, format_nuclear_status
 from utils.stats_average import stats_average
+from utils.predictions import predict_future_usage, format_future_usage
 
 def country_view(request, country_code):
     countries = Country.objects.all()
@@ -68,6 +69,13 @@ def country_view(request, country_code):
     context.update({
         "country_rankings": country_rankings,
     })
+
+    future_usage = format_future_usage(data)
+
+    context.update({
+        'future_usage': future_usage,
+    })
+
     return render(request, "pages/details.html", context)
 
 # ?+ jesli wszystkie wiersze w tabeli sa puste nie wyswietlac caly wiersz
