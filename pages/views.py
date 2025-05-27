@@ -2,14 +2,14 @@ from django.shortcuts import render
 from .models import EnergyData, Country, EnergyCategory, EnergyDomain
 from django.http import JsonResponse
 from collections import defaultdict
-from utils.stats import get_latest_value, get_trend_percentage, format_gas_trend, format_nuclear_status
+from utils.stats import get_latest_value, get_trend_percentage, format_gas_trend, format_nuclear_status, get_countryinfo
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from utils.stats_average import stats_average
 from utils.predictions import predict_future_usage, format_future_usage
 
 def home(request):
-    selected_country_code = request.GET.get('country') 
+    selected_country_code = request.GET.get('country')
     countries = Country.objects.all()
 
     table = {}
@@ -65,6 +65,7 @@ def category_detail(request, category_id):
         'countries': countries
     })
 
+
 def country_view(request, country_code):
     countries = Country.objects.all()
     selected_country = Country.objects.get(code=country_code)
@@ -80,7 +81,7 @@ def country_view(request, country_code):
     ).filter(country__code=country_code, category=selected_category)
 
 
-    table = {}    
+    table = {}
     years = sorted(set(d.year for d in data))
     for record in data:
         source = record.source.name
@@ -117,7 +118,7 @@ def country_view(request, country_code):
         'year_range': request.GET.get('year_range'),
         # ewentualnie mozna przeniesiesc Insights (nuclear_status, gas_status, etc.) do osobnego kontekstu lub struktury
         'nuclear_status': nuclear_status,
-       
+
         'gas_status': gas_status,
         'renewable_total': round(renewable_total or 0, 3),
         'waste_total': round(waste_total or 0, 3),
@@ -139,6 +140,10 @@ def country_view(request, country_code):
         'future_usage': future_usage,
     })
 
+    wiki_info = get_countryinfo(selected_country.name)
+    context.update({
+        'wiki_info': wiki_info
+    })
     return render(request, "pages/details.html", context)
 
 # ?+ jesli wszystkie wiersze w tabeli sa puste nie wyswietlac caly wiersz

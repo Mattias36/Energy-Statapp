@@ -3,76 +3,23 @@
 {% load custom_filter %}
 {% load static %}
 
-<style>
-.insights {
-  text-align: center;
-  max-width: 400px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
-}
-    .tooltip {
-      position: relative;
-      cursor: help;
-    }
-
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: max-content;
-      background-color: #333;
-      color: #fff;
-      text-align: left;
-      border-radius: 4px;
-      padding: 5px 8px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%; 
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-      font-size: 0.75rem;
-      white-space: nowrap;
-    }
-
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 600px;
-      margin: 1rem auto;
-      font-family: Arial, sans-serif;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem 1rem;
-      text-align: left;
-    }
-
-    th {
-      background-color: #0057b7;
-    }
-    .color-green {
-      color: green;
-      font-weight: bold;
-    }
-    .color-red {
-      color: red;
-      font-weight: bold;
-    }
-    .color-gray {
-      color: gray;
-      font-weight: bold;
-    }
-</style>
-
-
-
 <div class="detail-wrapper">
+  {% if wiki_info %}
+  <div class="country-info-flex">
+    <div class="country-text">
+      <h2>{{ wiki_info.title }}</h2>
+      <p><strong>Opis:</strong> {{ wiki_info.description }}</p>
+      <p>{{ wiki_info.summary }}</p>
+<!--?      <p><a href="{{ wiki_info.content_urls }}">source</a></p>-->
+    </div>
+
+    {% if wiki_info.thumbnail %}
+    <div class="country-flag">
+        <img src="{{ wiki_info.thumbnail }}" alt="Flaga lub grafika kraju">
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
 
 <h1 class="page-title">{{ selected_category.name }} for {{ selected_country }}</h1>
 
@@ -101,42 +48,7 @@
     <span class="tooltiptext">Opis Waste / Non-Renewable Waste.</span>
   </div>
 </div>
-
-<table>
-    <thead>
-    <tr>
-        <th>Energy Source</th>
-        <th>Country Share</th>
-        <th>Rank</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for source, info in country_rankings.items %}
-    <tr>
-        <td>{{ source }}</td>
-        <td class="tooltip">
-            {% if info.share_percent > info.average %}
-            <span class="color-green">
-            {% elif info.share_percent < info.average %}
-              <span class="color-red">
-            {% else %}
-              <span class="color-gray">
-            {% endif %}
-                {{ info.share_percent|default:"–"|floatformat:1 }}%
-              </span>
-            <span class="tooltiptext">
-              Average in EU: {{ info.average|default:"–"|floatformat:1 }}%
-            </span>
-        </td> <!--- idk why not closed???? --->
-        <td>{{ info.rank|default:"–" }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="3" style="text-align:center;">No data available</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<canvas id="energyChart" width="800" height="400"></canvas>
 
 <div class="predictions">
   <h3 style="text-align: center; margin-bottom: 20px;">Predicted Energy Usage</h3>
@@ -165,60 +77,6 @@
       {% endfor %}
   </div>
 </div>
-
-<style>
-.bubble-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 items per row */
-  gap: 20px;
-  justify-items: center;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.bubble {
-  background-color: #eef3fa;
-  border: 2px solid #d0dbe8;
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-  position: relative;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 160px;
-}
-
-.bubble:hover {
-  transform: scale(1.05);
-  background-color: #dde8f7;
-}
-
-.bubble .tooltiptext {
-  visibility: hidden;
-  white-space: pre-line;
-  background-color: #333;
-  color: #fff;
-  text-align: left;
-  border-radius: 6px;
-  padding: 8px;
-  position: absolute;
-  z-index: 10;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  min-width: 150px;
-}
-
-.bubble:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-</style>
 
   <!-- INSIGHTS SECTION -->
  
@@ -323,25 +181,99 @@
         const selectedRangeLabel = document.getElementById("selectedRangeLabel");
         const graphContainer = document.getElementById("graphContainer");
         const ctx = document.getElementById("totalChart").getContext("2d");
-    
+
         let chartInstance = null;
-    
+
         function getCurrentValues(maxIndex) {
             return {
                 years: totalYears.slice(0, maxIndex + 1),
                 values: totalValues.slice(0, maxIndex + 1)
             };
         }
-    
+
         function updateChartRange(value) {
             const rangeValue = parseInt(value);
             const current = getCurrentValues(rangeValue);
             selectedRangeLabel.textContent = `${current.years[0]} – ${current.years.slice(-1)[0]}`;
         }
-    
+
+        const data = {
+            labels: [
+              {% for source, info in country_rankings.items %}
+                "{{ source }}",
+              {% endfor %}
+            ],
+            datasets: [
+              {
+                label: "EU Average",
+                data: [
+                  {% for source, info in country_rankings.items %}
+                    {{ info.average|default:"null" }},
+                  {% endfor %}
+                ],
+                backgroundColor: "rgba(0,128,255,0.15)",
+                borderColor: "rgba(200, 200, 200, 1)",
+                borderWidth: 1
+              },
+              {
+                label: "Country Share",
+                data: [
+                  {% for source, info in country_rankings.items %}
+                    {{ info.share_percent|default:"null" }},
+                  {% endfor %}
+                ],
+                backgroundColor: [
+                  {% for source, info in country_rankings.items %}
+                    {% if info.share_percent > info.average %}
+                      "rgba(0,192,0,0.7)",
+                    {% elif info.share_percent < info.average %}
+                      "rgba(255,0,0,0.7)",
+                    {% else %}
+                      "rgba(0,128,255,0.15)",
+                    {% endif %}
+                  {% endfor %}
+                ],
+                borderColor: "rgba(0, 0, 0, 0.1)",
+                borderWidth: 1
+              }
+            ]
+    };
+
+        const config = {
+            type: "bar",
+            data: data,
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "bottom"
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return context.dataset.label + ": " + context.raw + "%";
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: "Percentage (%)"
+                  },
+                  beginAtZero: true,
+                    // max: 100, tu czy scale dla kazdego panstwa czy max dawac zawsze 100.
+                }
+              }
+            }
+        };
+
+        new Chart(document.getElementById("energyChart"), config);
+
         function renderChart(type = "bar", maxIndex = totalYears.length - 1, extraData = []) {
             const current = getCurrentValues(maxIndex);
-    
             const datasets = [
                 {
                     label: "{{ selected_country }}",
@@ -352,7 +284,6 @@
                     tension: 0.3
                 }
             ];
-    
             // Dodaj dane porównywane
             extraData.forEach(item => {
                 datasets.push({
@@ -364,11 +295,10 @@
                     tension: 0.3
                 });
             });
-    
             if (chartInstance) {
                 chartInstance.destroy();
             }
-    
+
             chartInstance = new Chart(ctx, {
                 type: type,
                 data: {
@@ -393,26 +323,24 @@
                     }
                 }
             });
-    
             graphContainer.style.display = "block";
         }
-    
         document.getElementById("generateGraphButton").addEventListener("click", async () => {
             const maxIndex = parseInt(yearRange.value);
             const type = graphTypeSelect.value;
-    
+
             // Pobieranie krajów do porównania
             const selectedOptions = Array.from(compareSelect.selectedOptions);
             const selectedCodes = selectedOptions.map(opt => opt.value);
-    
+
             let extraData = [];
-    
+
             if (selectedCodes.length > 0) {
                 const queryParams = selectedCodes.map(code => `countries[]=${code}`).join("&");
                 const response = await fetch(`/compare_data/?${queryParams}`);
 
                 const data = await response.json();
-    
+
                 // Generowanie losowych kolorów i datasetów
                 extraData = data.map(entry => ({
                     name: entry.name,
@@ -420,10 +348,10 @@
                     color: getRandomColor()
                 }));
             }
-    
+
             renderChart(type, maxIndex, extraData);
         });
-    
+
         function getRandomColor() {
           const r = Math.floor(Math.random() * 255);
           const g = Math.floor(Math.random() * 255);
@@ -438,9 +366,9 @@
             alert('Proszę najpierw wygenerować wykres do pobrania');
             return;
         }
-    
+
         chartContainer.scrollIntoView({ behavior: "smooth" });
-    
+
         html2canvas(chartContainer).then(canvas => {
             canvas.toBlob(blob => {
                 const url = URL.createObjectURL(blob);
@@ -454,10 +382,10 @@
             }, 'image/png');
         });
 });
-    
+
         // Inicjalizacja
         updateChartRange(yearRange.value);
     });
 </script>
-    
+
 {% endblock page_content %}

@@ -1,5 +1,5 @@
 # Plik z funkcjami pomocniczymi do analizy danych energetycznych (w folderze funkcji pomocniczych utils)
-
+import requests
 # colors, cz.kodu, etc.
 from django.utils.html import format_html
 
@@ -49,3 +49,22 @@ def format_gas_trend(trend):
     )
 # +? format dla innych funkcji, wartosci thresholds porownujace cala europe i formatowanie na ich podstawie,
 # profil uzytkownika na ktorym wybiera parametry istotne do wyswietlenia
+
+
+def get_countryinfo(country_name):
+    ''' return dla polski rzedu:
+    1. get https://en.wikipedia.org/api/rest_v1/page/summary/Poland
+    2. jesli ok(200) - title, description (Country in Central Europe), summary (wiekszy opis), flaga, '''
+    url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{country_name}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return {
+            'title': data.get('title'),
+            'description': data.get('description'),
+            'summary': data.get('extract'),
+            'thumbnail': data.get('thumbnail', {}).get('source'),
+            'content_urls': data.get('content_urls', {}).get('desktop', {}).get('page'),
+        }
+    return None
+# proponuje filter tagow by wyswietlac info bezposrednio o energetyce jesli jest na stronie
