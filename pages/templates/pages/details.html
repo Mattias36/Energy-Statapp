@@ -142,7 +142,7 @@
     
             const datasets = [
                 {
-                    label: "Total:",
+                    label: "{{ selected_country }}",
                     data: current.values,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
@@ -156,7 +156,7 @@
                 datasets.push({
                     label: item.name,
                     data: item.values.slice(0, maxIndex + 1),
-                    backgroundColor: item.color + "80",
+                    backgroundColor: item.color.replace('1)', '0.5)'),
                     borderColor: item.color,
                     fill: type === "line",
                     tension: 0.3
@@ -223,12 +223,12 @@
         });
     
         function getRandomColor() {
-            const r = Math.floor(Math.random() * 200);
-            const g = Math.floor(Math.random() * 200);
-            const b = Math.floor(Math.random() * 200);
-            return `rgba(${r}, ${g}, ${b}, 1)`;
+          const r = Math.floor(Math.random() * 255);
+          const g = Math.floor(Math.random() * 255);
+          const b = Math.floor(Math.random() * 255);
+          return `rgba(${r}, ${g}, ${b}, 0.9)`;
         }
-    
+
         document.getElementById('saveImageButton').addEventListener('click', function () {
         const chartContainer = document.getElementById('graphContainer');
 

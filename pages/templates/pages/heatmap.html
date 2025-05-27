@@ -48,7 +48,7 @@
                     onEachFeature: (feature, layer) => {
                         const code = feature.properties.wb_a2;
                         const value = data[code];
-                        layer.bindPopup(`<strong>${feature.properties.admin}</strong><br>Heat: ${value ?? "no data"}`);
+                        layer.bindPopup(`<strong>${feature.properties.admin}</strong><br>Heat: ${value ?? "no data"} PJ`);
                         console.log(feature.properties);
                     }
                 }).addTo(map);
