@@ -2,11 +2,8 @@
 {% block page_content %}
 {% load custom_filter %}
 {% load static %}
-<head>
-  <meta charset="UTF-8" />
-  <title>Country Energy Details</title>
-  <style>
-/*  link stylesheet static nie dziala? dodac do osobnych plikow*/
+
+<style>
 .insights {
   text-align: center;
   max-width: 400px;
@@ -28,7 +25,7 @@
       padding: 5px 8px;
       position: absolute;
       z-index: 1;
-      bottom: 125%; /*  above */
+      bottom: 125%; 
       left: 50%;
       transform: translateX(-50%);
       opacity: 0;
@@ -57,7 +54,7 @@
     }
 
     th {
-      background-color: #f2f2f2;
+      background-color: #0057b7;
     }
     .color-green {
       color: green;
@@ -71,15 +68,17 @@
       color: gray;
       font-weight: bold;
     }
-  </style>
-</head>
+</style>
+
 
 
 <div class="detail-wrapper">
 
-  <h1 class="page-title">{{ selected_category.name }} for {{ selected_country }}</h1>
+<h1 class="page-title">{{ selected_category.name }} for {{ selected_country }}</h1>
 
 <!-- update for bubbles for better view --->
+<div class="info-section">
+  <h2>Energy Summary Overview</h2>
 <div class="insights bubble-grid">
   <div class="bubble tooltip">
     <strong>Nuclear Investment Status:</strong><br>
@@ -222,20 +221,8 @@
 </style>
 
   <!-- INSIGHTS SECTION -->
-  <div class="info-section">
-    <h2>Energy Summary Overview</h2>
-    <div class="insight-item">
-      <strong>Nuclear Investment Status:</strong> {{ nuclear_status|safe }}
-    </div>
-    <div class="insight-item">
-      <strong>Natural Gas Trend:</strong> {{ gas_status|safe }}
-    </div>
-    <div class="insight-item">
-      <strong>Total Renewables (Latest Year):</strong> <span>{{ renewable_total }}</span>
-    </div>
-    <div class="insight-item">
-      <strong>Waste / Non-Renewable Waste:</strong> <span>{{ waste_total }}</span>
-    </div>
+ 
+   
   </div>
 
   <!-- TABLE SECTION - tabela do testowania czy dane się zgadzają--> 
