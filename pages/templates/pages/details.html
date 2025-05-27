@@ -1,10 +1,225 @@
 {% extends "base.html" %}
 {% block page_content %}
 {% load custom_filter %}
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <title>Country Energy Details</title>
+  <style>
+/*  link stylesheet static nie dziala? dodac do osobnych plikow*/
+.insights {
+  text-align: center;
+  max-width: 400px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+    .tooltip {
+      position: relative;
+      cursor: help;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: max-content;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 4px;
+      padding: 5px 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%; /*  above */
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+      margin: 1rem auto;
+      font-family: Arial, sans-serif;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+    .color-green {
+      color: green;
+      font-weight: bold;
+    }
+    .color-red {
+      color: red;
+      font-weight: bold;
+    }
+    .color-gray {
+      color: gray;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
 
 <div class="detail-wrapper">
 
   <h1 class="page-title">{{ selected_category.name }} for {{ selected_country }}</h1>
+
+<!-- update for bubbles for better view --->
+<div class="insights bubble-grid">
+  <div class="bubble tooltip">
+    <strong>Nuclear Investment Status:</strong><br>
+    {{ nuclear_status|safe }}
+    <span class="tooltiptext">Procentowy udział energii jądrowej w całkowitej produkcji energii danego kraju.</span>
+  </div>
+  <div class="bubble tooltip">
+    <strong>Natural Gas Trend:</strong><br>
+    {{ gas_status|safe }}
+    <span class="tooltiptext">Roczna zmiana procentowa udziału gazu ziemnego w produkcji energii</span>
+  </div>
+  <div class="bubble tooltip">
+    <strong>Total Renewables (Latest Year):</strong><br>
+    <span>{{ renewable_total }}</span>
+    <span class="tooltiptext">Całkowita produkcja energii ze źródeł odnawialnych</span>
+  </div>
+  <div class="bubble tooltip">
+    <strong>Waste / Non-Renewable Waste:</strong><br>
+    <span>{{ waste_total }}</span>
+    <span class="tooltiptext">Opis Waste / Non-Renewable Waste.</span>
+  </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Energy Source</th>
+        <th>Country Share</th>
+        <th>Rank</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for source, info in country_rankings.items %}
+    <tr>
+        <td>{{ source }}</td>
+        <td class="tooltip">
+            {% if info.share_percent > info.average %}
+            <span class="color-green">
+            {% elif info.share_percent < info.average %}
+              <span class="color-red">
+            {% else %}
+              <span class="color-gray">
+            {% endif %}
+                {{ info.share_percent|default:"–"|floatformat:1 }}%
+              </span>
+            <span class="tooltiptext">
+              Average in EU: {{ info.average|default:"–"|floatformat:1 }}%
+            </span>
+        </td> <!--- idk why not closed???? --->
+        <td>{{ info.rank|default:"–" }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3" style="text-align:center;">No data available</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="predictions">
+  <h3 style="text-align: center; margin-bottom: 20px;">Predicted Energy Usage</h3>
+  <div class="bubble-grid">
+      {% for source, info in future_usage.items %}
+      {# iteracja po wszystkich zrdolach energii i ich danych w future_usage , zmienne val_2025,20206#}
+      {% with val_2025=info.predictions.2025 val_2026=info.predictions.2026 %}
+      {% if val_2025 and val_2025 != 0 and val_2026 and val_2026 != 0 %}
+      <div class="bubble">
+          <strong>{{ source }}</strong><br>
+          <span class="
+              {% if val_2026 > val_2025 %}
+                up
+              {% elif val_2026 < val_2025 %}
+                down
+              {% else %}
+                neutral
+              {% endif %}
+            ">
+              {{ val_2025|floatformat:1 }} → {{ val_2026|floatformat:1 }}
+            </span>
+          <span class="tooltiptext">{{ info.tooltip }}</span>
+      </div>
+      {% endif %}
+      {% endwith %}
+      {% endfor %}
+  </div>
+</div>
+
+<style>
+.bubble-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+  gap: 20px;
+  justify-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.bubble {
+  background-color: #eef3fa;
+  border: 2px solid #d0dbe8;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  position: relative;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 160px;
+}
+
+.bubble:hover {
+  transform: scale(1.05);
+  background-color: #dde8f7;
+}
+
+.bubble .tooltiptext {
+  visibility: hidden;
+  white-space: pre-line;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  min-width: 150px;
+}
+
+.bubble:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
 
   <!-- INSIGHTS SECTION -->
   <div class="info-section">
