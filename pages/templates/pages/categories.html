@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block page_content %}
+<h1>Wybierz kategorię</h1>
+<ul>
+  {% for category in categories %}
+    <li>
+      <a href="{% url 'category_detail' category.id %}">
+        {{ category.name }} ({{ category.domain.name }})
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<h2>European Heat Production Map</h2>
+
+<label for="yearSlider">Select Year:</label>
+<input type="range" id="yearSlider" min="2000" max="2021" value="2021">
+<span id="yearLabel">2021</span>
+
+<div id="map" style="height: 600px; margin-top: 20px;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    const map = L.map('map').setView([52, 15], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    let geoLayer;
+
+    function getColor(val) {
+        if (val == null) return '#ccc';
+        return val > 500 ? '#800026' :
+               val > 300 ? '#BD0026' :
+               val > 200 ? '#E31A1C' :
+               val > 100 ? '#FC4E2A' :
+               val > 50  ? '#FD8D3C' :
+               val > 10  ? '#FEB24C' :
+                           '#FFEDA0';
+    }
+
+    function updateMap(data) {
+        if (geoLayer) geoLayer.remove();
+
+        fetch("{% static 'geo/europe.geo.json' %}")
+            .then(response => response.json())
+            .then(geo => {
+                geoLayer = L.geoJson(geo, {
+                    style: feature => {
+                        const code = feature.properties.wb_a2;
+                        const value = data[code];
+                        return {
+                            fillColor: getColor(value),
+                            weight: 1,
+                            color: 'white',
+                            fillOpacity: 1.0
+                        };
+                    },
+                    onEachFeature: (feature, layer) => {
+                        const code = feature.properties.wb_a2;
+                        const value = data[code];
+                        layer.bindPopup(`<strong>${feature.properties.admin}</strong><br>Heat: ${value ?? "no data"}`);
+                        console.log(feature.properties);
+                    }
+                }).addTo(map);
+            });
+    }
+
+    function loadYear(year) {
+        document.getElementById("yearLabel").innerText = year;
+        fetch(`/heatmap-data/?year=${year}`)
+            .then(response => response.json())
+            .then(data => updateMap(data));
+    }
+
+    const slider = document.getElementById("yearSlider");
+    slider.addEventListener("input", () => loadYear(slider.value));
+    loadYear(slider.value);
+</script>
+{% endblock page_content %}

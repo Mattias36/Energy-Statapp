@@ -4,7 +4,7 @@
 
 <div class="detail-wrapper">
 
-  <h1 class="page-title">Energy Production for {{ selected_country }}</h1>
+  <h1 class="page-title">{{ selected_category.name }} for {{ selected_country }}</h1>
 
   <!-- INSIGHTS SECTION -->
   <div class="info-section">
@@ -23,8 +23,8 @@
     </div>
   </div>
 
-  <!-- TABLE SECTION -->
-  <section class="data-table">
+  <!-- TABLE SECTION - tabela do testowania czy dane się zgadzają--> 
+  <!-- <section class="data-table">
     <h2>Dane produkcji energii</h2>
     {% if selected_country %}
       <p>Wyświetlanie danych dla <strong>{{ selected_country }}</strong></p>
@@ -59,7 +59,7 @@
     {% else %}
       <p>Wybierz kraj, aby wyświetlić dane.</p>
     {% endif %}
-    </section>
+    </section> -->
 
 
   <!-- CHART CONTROLS SECTION -->
@@ -142,7 +142,7 @@
     
             const datasets = [
                 {
-                    label: "Total Production",
+                    label: "Total:",
                     data: current.values,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
