@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block page_content %}
-<h2>European Heat Production Map</h2>
 
-<label for="yearSlider">Select Year:</label>
-<input type="range" id="yearSlider" min="2000" max="2021" value="2021">
-<span id="yearLabel">2021</span>
+<section class="heatmap-container">
+    <h2 class="heatmap-title">Mapa Produkcji Ciepła w Europie 🔥</h2>
 
-<div id="map" style="height: 480px; margin-top: 10px;"></div>
+    <div class="controls">
+        <label for="yearSlider" class="slider-label">Wybierz rok:</label>
+        <input type="range" id="yearSlider" min="2000" max="2021" value="2021" class="styled-slider">
+        <span id="yearLabel" class="year-display">2021</span>
+    </div>
+
+    <div class="map-wrapper">
+        <div id="map" class="heatmap"></div>
+    </div>
+
+    <div class="map-spacing"></div> <!-- Przerwa pod mapą -->
+</section>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -48,8 +58,7 @@
                     onEachFeature: (feature, layer) => {
                         const code = feature.properties.wb_a2;
                         const value = data[code];
-                        layer.bindPopup(`<strong>${feature.properties.admin}</strong><br>Heat: ${value ?? "no data"} PJ`);
-                        console.log(feature.properties);
+                        layer.bindPopup(`<strong>${feature.properties.admin}</strong><br>Heat: ${value ?? "Brak danych"} PJ`);
                     }
                 }).addTo(map);
             });
@@ -62,8 +71,8 @@
             .then(data => updateMap(data));
     }
 
-    const slider = document.getElementById("yearSlider");
-    slider.addEventListener("input", () => loadYear(slider.value));
-    loadYear(slider.value);
+    document.getElementById("yearSlider").addEventListener("input", () => loadYear(document.getElementById("yearSlider").value));
+    loadYear(document.getElementById("yearSlider").value);
 </script>
-{% endblock page_content %}
+
+{% endblock %}
