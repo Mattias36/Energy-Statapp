@@ -1,13 +1,53 @@
 {% extends "base.html" %}
+
 {% block page_content %}
-<h1>Kraje z danymi dla kategorii: {{ category.name }}</h1>
-<ul>
-  {% for country in countries %}
-    <li><a href="{% url 'country_view' country.code %}?category={{ category.id }}">{{ country.name }}</a>
-    </li>
-  {% empty %}
-    <li>Brak dostępnych danych dla tej kategorii.</li>
-  {% endfor %}
-</ul>
-<p><a href="{% url 'categories' %}">← Wróć do listy kategorii</a></p>
+<div class="countries-container">
+    <h1>Kraje z danymi dla kategorii: {{ category.name }}</h1>
+
+    <!-- Pole wyszukiwania -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Wyszukaj kraj...">
+    </div>
+
+    <!-- Lista krajów jako siatka kafelków -->
+    <div id="countriesGrid" class="countries-grid">
+        {% for country in countries %}
+        <div class="country-card">
+            <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
+                <img src="https://flagcdn.com/w320/{{ country.code|lower }}.png" 
+                     onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg'" 
+                     alt="{{ country.name }} Flaga">
+                <h3>{{ country.name }}</h3>
+            </a>
+        </div>
+        {% empty %}
+        <p>Brak dostępnych danych dla tej kategorii.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Przycisk "Wróć" -->
+    <p>
+        <a href="{% url 'categories' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Wróć do listy kategorii
+        </a>
+    </p>
+</div>
+
+<script>
+    let searchInput = document.getElementById("searchInput");
+    function filterCountries() {
+        let input = searchInput.value.toLowerCase();
+        let items = document.querySelectorAll(".country-card");
+
+        items.forEach(function(item) {
+            let text = item.querySelector("h3").textContent.toLowerCase();
+            if (text.includes(input)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+    searchInput.addEventListener("keyup", filterCountries);
+</script>
 {% endblock %}

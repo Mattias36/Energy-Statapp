@@ -3,8 +3,15 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
+.page-content {
+    flex: 1;
+    padding-bottom: 100px; /* Zapewnia miejsce dla stopki */
+}
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -26,10 +33,10 @@ body {
 }
 
 .nav-links li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+    color: #222;
+    font-weight: 600; /* Delikatnie pogrubiony tekst */
 }
+
 
 .nav-links li a:hover {
     text-decoration: underline;
@@ -112,11 +119,14 @@ thead {
 }
 
 .footer {
-    text-align: center;
-    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     background-color: #0057b7;
     color: white;
-    margin-top: 2rem;
+    padding: 1rem;
+    text-align: center;
 }
 
 .image img {
@@ -340,3 +350,206 @@ th {
 
 }
 
+.categories-container {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.folder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    justify-content: center;
+    max-width: 900px;
+    margin: 3rem auto 5rem auto;
+}
+
+.big-folder {
+    width: 90%;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, #b7c8df, #a2cfea); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    text-align: center;
+}
+
+.big-folder:hover {
+    transform: translateY(-5px) rotateX(5deg);
+    background: linear-gradient(135deg, #b7c8df,#a2cfea);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.big-folder:active {
+    transform: scale(0.98);
+}
+
+.big-folder a {
+    text-decoration: none;
+    color: black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.folder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ikony pod nazwami */
+.folder-content i {
+    font-size: 5rem; /* Dopasowany rozmiar ikon */
+    color: #0047ab;
+    display: block;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.folder-content h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    max-width: 95%; /* Lepsza szerokość dla czytelności */
+    margin: 0 auto;
+    padding: 0.5rem;
+    word-wrap: break-word;
+}
+
+/* Efekt hover dla ikon */
+.folder-content i:hover {
+    transform: scale(1.1);
+}
+
+.countries-container {
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.suggestions-box {
+    position: absolute;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-align: center;
+}
+
+.suggestion-item:hover {
+    background: #e0f0ff;
+}
+
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background: #f9f9f9;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    transition: 0.3s ease-in-out;
+}
+
+ul li:hover {
+    background: #e0f0ff;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #0057b7;
+    font-weight: bold;
+}
+
+/* Przycisk Wróć */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #0057b7;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.back-button i {
+    margin-right: 0.5rem;
+}
+
+.countries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    justify-content: center;
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.country-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.country-card:hover {
+    transform: scale(1.05);
+}
+
+.country-card img {
+    width: 100px; /* Stała szerokość */
+    height: 70px; /* Stała wysokość */
+    object-fit: cover; /* Zapewnia dopasowanie proporcji */
+    border-radius: 5px;
+}
+
+
+.country-card h3 {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
