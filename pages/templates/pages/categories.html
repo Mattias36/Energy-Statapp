@@ -4,41 +4,16 @@
 <div class="categories-container">
     <h1>Wybierz kategorię</h1>
     <div class="folder-grid">
+        {% for category in categories %}
         <div class="big-folder">
-            <a href="{% url 'production' %}">
+            <a href="{% url 'category_detail' category.id %}">
                 <div class="folder-content">
-                    <i class="fas fa-industry"></i> <!-- Ikona fabryki dla "Production" -->
-                    <h2>Production</h2>
+                    <i class="fas fa-folder"></i>
+                    <h2>{{ category.name }}</h2>
                 </div>
             </a>
         </div>
-
-        <div class="big-folder">
-            <a href="{% url 'final_energy' %}">
-                <div class="folder-content">
-                    <i class="fas fa-bolt"></i> <!-- Ikona energii dla "Final Energy Consumption" -->
-                    <h2>Final Energy Consumption</h2>
-                </div>
-            </a>
-        </div>
-
-        <div class="big-folder">
-            <a href="{% url 'electricity_generation' %}">
-                <div class="folder-content">
-                    <i class="fas fa-plug"></i> <!-- Ikona gniazdka dla "Electricity Generation" -->
-                    <h2>Gross Electricity Generation, by Fuel [TWh]</h2>
-                </div>
-            </a>
-        </div>
-
-        <div class="big-folder">
-            <a href="{% url 'heat_generation' %}">
-                <div class="folder-content">
-                    <i class="fas fa-fire"></i> <!-- Ikona ognia dla "Heat Generation" -->
-                    <h2>Gross Heat Generation [PJ]</h2>
-                </div>
-            </a>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
