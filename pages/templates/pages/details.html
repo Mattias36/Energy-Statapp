@@ -3,23 +3,26 @@
 {% load custom_filter %}
 {% load static %}
 
-<div class="detail-wrapper">
-  {% if wiki_info %}
-  <div class="country-info-flex">
-    <div class="country-text">
-      <h2>{{ wiki_info.title }}</h2>
-      <p><strong>Opis:</strong> {{ wiki_info.description }}</p>
-      <p>{{ wiki_info.summary }}</p>
-<!--?      <p><a href="{{ wiki_info.content_urls }}">source</a></p>-->
-    </div>
+{% if wiki_info %}
+<div class="country-detail">
+    <h2 class="country-title">{{ wiki_info.title }}</h2>
+    <p class="country-description"><strong>Opis:</strong> {{ wiki_info.description }}</p>
+    
+    <div class="country-info-grid">
+        {% if wiki_info.thumbnail %}
+        <div class="country-image">
+            <img src="{{ wiki_info.thumbnail }}" alt="{{ wiki_info.title }} - Flaga lub grafika">
+        </div>
+        {% endif %}
 
-    {% if wiki_info.thumbnail %}
-    <div class="country-flag">
-        <img src="{{ wiki_info.thumbnail }}" alt="Flaga lub grafika kraju">
+        <div class="country-summary">
+            <p>{{ wiki_info.summary }}</p>
+        </div>
     </div>
-    {% endif %}
-  </div>
-  {% endif %}
+</div>
+
+{% endif %}
+
 
 <h1 class="page-title">{{ selected_category.name }} for {{ selected_country }}</h1>
 

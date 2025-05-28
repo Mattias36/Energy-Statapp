@@ -597,3 +597,94 @@ ul li a {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+.heatmap-container {
+    text-align: center;
+    padding: 2rem;
+}
+
+.heatmap-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.slider-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.styled-slider {
+    width: 40%;
+    cursor: pointer;
+}
+
+.year-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0057b7;
+}
+
+.map-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heatmap {
+    width: 80%;
+    max-width: 1000px;
+    height: 500px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+}
+
+.map-spacing {
+    height: 50px;
+}
+
+.country-detail {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.country-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.country-description {
+    font-size: 1.2rem;
+    color: #333;
+    text-align: center;
+}
+
+.country-info-grid {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.country-image img {
+    width: 250px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.country-summary {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
