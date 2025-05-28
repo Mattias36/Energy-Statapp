@@ -2,33 +2,33 @@
 
 {% block page_content %}
 <div class="countries-container">
-    <h1>Kraje z danymi dla kategorii: {{ category.name }}</h1>
+    <h1>Countries with data for category: {{ category.name }}</h1>
 
-    <!-- Pole wyszukiwania -->
+    <!-- Search box -->
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Wyszukaj kraj...">
+        <input type="text" id="searchInput" placeholder="Search for a country...">
     </div>
 
-    <!-- Lista krajów jako siatka kafelków -->
+    <!-- List of countries displayed as a tile grid -->
     <div id="countriesGrid" class="countries-grid">
         {% for country in countries %}
         <div class="country-card">
             <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
                 <img src="https://flagcdn.com/w320/{{ country.code|lower }}.png" 
                      onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg'" 
-                     alt="{{ country.name }} Flaga">
+                     alt="{{ country.name }} Flag">
                 <h3>{{ country.name }}</h3>
             </a>
         </div>
         {% empty %}
-        <p>Brak dostępnych danych dla tej kategorii.</p>
+        <p>No available data for this category.</p>
         {% endfor %}
     </div>
 
-    <!-- Przycisk "Wróć" -->
+    <!-- Back button -->
     <p>
         <a href="{% url 'categories' %}" class="back-button">
-            <i class="fas fa-arrow-left"></i> Wróć do listy kategorii
+            <i class="fas fa-arrow-left"></i> Back to category list
         </a>
     </p>
 </div>

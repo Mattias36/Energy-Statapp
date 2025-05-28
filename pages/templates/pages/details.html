@@ -6,7 +6,7 @@
 {% if wiki_info %}
 <div class="country-detail">
     <h2 class="country-title">{{ wiki_info.title }}</h2>
-    <p class="country-description"><strong>Opis:</strong> {{ wiki_info.description }}</p>
+    <p class="country-description"><strong>Description:</strong> {{ wiki_info.description }}</p>
     
     <div class="country-info-grid">
         {% if wiki_info.thumbnail %}
@@ -33,22 +33,22 @@
   <div class="bubble tooltip">
     <strong>Nuclear Investment Status:</strong><br>
     {{ nuclear_status|safe }}
-    <span class="tooltiptext">Procentowy udział energii jądrowej w całkowitej produkcji energii danego kraju.</span>
+    <span class="tooltiptext">Percentage share of nuclear energy in the total energy production of the country.</span>
   </div>
   <div class="bubble tooltip">
     <strong>Natural Gas Trend:</strong><br>
     {{ gas_status|safe }}
-    <span class="tooltiptext">Roczna zmiana procentowa udziału gazu ziemnego w produkcji energii</span>
+    <span class="tooltiptext">Annual percentage change in the share of natural gas in energy production.</span>
   </div>
   <div class="bubble tooltip">
     <strong>Total Renewables (Latest Year):</strong><br>
     <span>{{ renewable_total }}</span>
-    <span class="tooltiptext">Całkowita produkcja energii ze źródeł odnawialnych</span>
+    <span class="tooltiptext">Total energy production from renewable sources.</span>
   </div>
   <div class="bubble tooltip">
     <strong>Waste / Non-Renewable Waste:</strong><br>
     <span>{{ waste_total }}</span>
-    <span class="tooltiptext">Opis Waste / Non-Renewable Waste.</span>
+    <span class="tooltiptext">Description of Waste / Non-Renewable Waste.</span>
   </div>
 </div>
 <canvas id="energyChart" width="800" height="400"></canvas>
@@ -57,7 +57,7 @@
   <h3 style="text-align: center; margin-bottom: 20px;">Predicted Energy Usage</h3>
   <div class="bubble-grid">
       {% for source, info in future_usage.items %}
-      {# iteracja po wszystkich zrdolach energii i ich danych w future_usage , zmienne val_2025,20206#}
+      {# iterating over all energy sources and their data in future_usage, variables val_2025, val_2026 #}
       {% with val_2025=info.predictions.2025 val_2026=info.predictions.2026 %}
       {% if val_2025 and val_2025 != 0 and val_2026 and val_2026 != 0 %}
       <div class="bubble">
