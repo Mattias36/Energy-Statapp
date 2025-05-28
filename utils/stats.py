@@ -24,12 +24,14 @@ def get_trend_percentage(data, source_name):
 
 
 def format_nuclear_status(latest_value, total_energy_value):
-    # format w html (ew zrobic flagi return i bezposrednio na stronie to formatowac)
-    if total_energy_value == 0:
+    # Jeśli brak danych, zwracamy komunikat
+    if latest_value is None or total_energy_value is None or total_energy_value == 0:
         return format_html('<span style="color:red;">No data available</span>')
 
-    # procentowy udzial energii jadrowej
-    nuclear_percentage = (latest_value / total_energy_value) * 100 if total_energy_value else 0
+    # Obliczenie procentowego udziału energii jądrowej
+    nuclear_percentage = (latest_value / total_energy_value) * 100
+
+    # Formatowanie wyniku w zależności od wartości procentowej
     if nuclear_percentage > 10:
         return format_html(
             '<span style="color:green;">Good ({}%)</span>',
