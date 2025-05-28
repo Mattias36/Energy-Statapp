@@ -1,13 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
+{% load custom_filter %}
 {% block page_content %}
-<h1>Wybierz kategorię</h1>
-<ul>
+<h1 style="text-align: center; margin-bottom: 30px;">Wybierz kategorię</h1>
+
+<div class="category-grid">
   {% for category in categories %}
-    <li>
-      <a href="{% url 'category_detail' category.id %}">
-        {{ category.name }} ({{ category.domain.name }})
-      </a>
-    </li>
+  
+    <a href="{% url 'category_detail' category.id %}" class="category-card">
+      <img src="{% static 'icons/' %}{{ category.name|to_slug }}.png" alt="Ikona" class="category-icon">
+      
+      <span class="category-name">{{ category.name|remove_units }}</span>
+    </a>
+   
   {% endfor %}
-</ul>
+</div>
 {% endblock %}

@@ -1,13 +1,43 @@
 {% extends "base.html" %}
+{% load static %}
+{% load custom_filter %}
 {% block page_content %}
-<h1>Kraje z danymi dla kategorii: {{ category.name }}</h1>
-<ul>
+
+<div class="category-header">
+  <img src="{% static 'icons/' %}{{ category.name|to_slug }}.png"
+       alt="Ikona kategorii" class="category-icon-large">
+  <h1>{{ category.name|remove_units }}</h1>
+</div>
+
+<input type="text" id="countrySearch" placeholder="Wyszukaj kraj..." class="search-bar">
+
+<ul class="country-list">
   {% for country in countries %}
-    <li><a href="{% url 'country_view' country.code %}?category={{ category.id }}">{{ country.name }}</a>
+    <li class="country-entry">
+      <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
+        <img src="https://flagcdn.com/h40/{{ country.code|lower }}.png" alt="{{ country.name }}" class="flag-icon">
+        {{ country.name }}
+      </a>
     </li>
   {% empty %}
     <li>Brak dostępnych danych dla tej kategorii.</li>
   {% endfor %}
 </ul>
+
 <p><a href="{% url 'categories' %}">← Wróć do listy kategorii</a></p>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const input = document.getElementById("countrySearch");
+  const items = document.querySelectorAll(".country-entry");
+
+  input.addEventListener("input", function () {
+    const query = input.value.toLowerCase();
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(query) ? "flex" : "none";
+    });
+  });
+});
+</script>
 {% endblock %}

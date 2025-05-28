@@ -340,3 +340,102 @@ th {
 
 }
 
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: center; /* CENTROWANIE */
+    padding: 0 40px;
+    max-width: 1200px;
+    margin: 0 auto; /* też pomaga centrować */
+  }
+  
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+  
+.category-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+  
+.category-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 10px;
+}
+  
+.category-name {
+    text-align: center;
+    font-weight: bold;
+}
+
+.category-header {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+  
+  .category-icon-large {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.country-entry {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+  
+.country-entry:hover {
+    background-color: #eaeaea;
+    transform: scale(1.01);
+}
+  
+.country-entry a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+  
+.flag-icon {
+    width: 40px;
+    height: 30px;
+    margin-right: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    object-fit: cover;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 20px auto;
+    display: block;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.country-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 800px;
+  }
