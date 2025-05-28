@@ -3,98 +3,82 @@
 {% load custom_filter %}
 
 {% block page_content %}
-
-<!-- Sekcja Powitalna -->
+<!-- Welcome Section -->
 <section class="hero">
-    <div class="hero-content">
-      <h1>Witamy w Energy Statistic App</h1>
-      <p>Odkrywaj szczegółowe dane na temat produkcji i konsumpcji energii w Europie.</p>
-    </div>
-  </section>
-  
-<!-- Sekcja O Nas -->
-<section id="about" class="info-section">
-    <h2>O projekcie</h2>
-    <p><strong>Energy Statistic App</strong> pomaga Ci odkrywać dane energetyczne z krajów europejskich.</p>
-  
-    <h3>Gdzie jesteśmy?</h3>
-    <p>Nasze biuro znajduje się w sercu Wrocławia, w Polsce.</p>
-  
-    <div class="container">
-      <div class="section">
-        <h2>Adres</h2>
-        <p><strong>Energy Statistic App Office</strong></p>
-        <p><span>📍</span> ul. Świdnicka 12<br>50-067 Wrocław, Polska</p>
-        <p><span>☎️</span> +48 123 456 789</p>
-        <p><span>✉️</span> <a href="mailto:kontakt@energyapp.pl">kontakt@energyapp.pl</a></p>
-      </div>
-  
-      <div class="section">
-        <h2>Znajdź nas na mapie</h2>
-        <div class="map-container">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2419.6813940162826!2d17.03334851572278!3d51.10792381831948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc20b6cd941e1%3A0x30a163b8599a5a6!2s%C5%9Awidnicka+12%2C+50-067+Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1673032492481!5m2!1spl!2spl"
-            allowfullscreen
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            style="border: 0;">
-          </iframe>
-        </div>
-      </div>
-    </div>
-  </section>
-  
- <!-- Wizualizacja biura -->
-<section class="info-section">
-  <h2>Nasze biuro</h2>
-  <div class="content">
-      <div class="text">
-          <p>Nasze biuro w centrum Wrocławia to przestrzeń, w której kreatywność i współpraca są na pierwszym miejscu. W naszym biurze, które łączy nowoczesność i funkcjonalność, zapewniamy przyjazne środowisko pracy.</p>
-      </div>
-      <div class="image">
-        <img src="{% static 'images/office1.jpg' %}" alt="Zewnętrzny widok biurowca">
-      </div>
+  <div class="hero-content">
+      <h1 class="hero-title"><span>Welcome to the Energy Analysis Platform</span> 📈</h1>
+      <p class="hero-subtitle">Analyze, explore, and compare Europe's energy data.</p>
+      <!-- <a href="{% url 'categories' %}" class="cta-button">Browse Categories</a> -->
   </div>
 </section>
 
-<!-- Firma -->
+
+<!-- About Us Section -->
 <section class="info-section">
-  <h2>Nasza misja</h2>
-  <div class="content">
-      <div class="text">
-        <p>Naszą misją jest udostępnianie przejrzystych i dokładnych danych energetycznych, które pozwalają na podejmowanie świadomych decyzji w różnych sektorach.</p>
+
+  <h3>Where are we?</h3>
+  <p>Our office is located in the heart of Wrocław, Poland.</p>
+
+  <div class="container">
+      <div class="section">
+          <h2>Address</h2>
+          <p><strong>Energy Statistic App Office</strong></p>
+          <p>📍 Świdnicka Street 12, Wrocław, Poland</p>
+          <p>☎️ +48 123 456 789</p>
+          <p>✉️ <a href="mailto:kontakt@energyapp.pl">kontakt@energyapp.pl</a></p>
       </div>
-      <div class="image">
-        <img src="{% static 'images/office2.jpg' %}" alt="Nowoczesne wnętrze biura">
+
+    <div class="section">
+      <h2>Find us on the map</h2>
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2419.6813940162826!2d17.03334851572278!3d51.10792381831948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc20b6cd941e1%3A0x30a163b8599a5a6!2s%C5%9Awidnicka+12%2C+50-067+Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1673032492481!5m2!1spl!2spl"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          style="border: 0;">
+        </iframe>
       </div>
+    </div>
   </div>
 </section>
 
-<!-- Sekcja Co Oferujemy -->
-<section id="offer" class="info-section">
-  <h2>Co oferujemy</h2>
+<!-- What We Offer Section -->
+<section class="info-section animated-section">
+  <h2>Our Features</h2>
   <ul>
-    <li><strong>Interaktywne wykresy:</strong> Dynamiczne wizualizacje z wykorzystaniem Chart.js.</li>
-    <li><strong>Prognoza zużycia energii:</strong> Wykorzystanie zaawansowanych modeli regresyjnych.</li>
-    <li><strong>Międzynarodowe porównania:</strong> Porównaj dane energetyczne między krajami.</li>
-    <li><strong>Możliwość wgrywania danych:</strong> Importuj własne pliki Excel/CSV do analizy.</li>
-    <li><strong>Integracja z API:</strong> Uzyskaj dostęp do danych w czasie rzeczywistym z zewnętrznych źródeł.</li>
-    <li><strong>Generowanie raportów PDF:</strong> Twórz raporty do pobrania.</li>
-    <li><strong>Panel użytkownika:</strong> Zapisuj preferencje i historię zapytań.</li>
+      <li>📊 <strong>Interactive Charts</strong> – dynamic analyses.</li>
+      <li>🔍 <strong>Country Comparisons</strong> – explore data.</li>
+      <li>📈 <strong>Energy Consumption Forecasts</strong> – advanced models.</li>
+      <li>📜 <strong>Country Comparison in PNG</strong> – export data.</li>
   </ul>
 </section>
 
-<!-- Pasek krajów -->
-<!-- <section class="country-selector">
-  <h2>Przeglądaj po krajach</h2>
-  <div class="countries">
-    {% for country in countries %}
-    <a href="{% url 'country_view' country_code=country.code %}" class="country-link">
-        {{ country.name }}
-    </a>
-    {% endfor %}
-  </div>
-</section> -->
+<!-- About Us Link -->
+<section class="info-section animated-section">
+  <h2>Learn More About Us</h2>
+  <p>Want to know more about our mission and office?</p>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      let sections = document.querySelectorAll(".animated-section");
+
+      function revealSections() {
+          sections.forEach(section => {
+              let position = section.getBoundingClientRect().top;
+              let windowHeight = window.innerHeight;
+
+              if (position < windowHeight - 100) {
+                  section.classList.add("visible");
+              }
+          });
+      }
+
+      window.addEventListener("scroll", revealSections);
+      revealSections();
+  });
+</script>
 
 
 {% endblock %}

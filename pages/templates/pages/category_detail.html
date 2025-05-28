@@ -2,30 +2,34 @@
 {% load static %}
 {% load custom_filter %}
 {% block page_content %}
+<div class="countries-container">
+  <div class="category-header">
+    <img src="{% static 'icons/' %}{{ category.name|to_slug }}.png"
+         alt="Ikona kategorii" class="category-icon-large">
+    <h1>{{ category.name|remove_units }}</h1>
+  </div>
 
-<div class="category-header">
-  <img src="{% static 'icons/' %}{{ category.name|to_slug }}.png"
-       alt="Ikona kategorii" class="category-icon-large">
-  <h1>{{ category.name|remove_units }}</h1>
+  <input type="text" id="countrySearch" placeholder="Search..." class="search-bar">
+
+  <ul class="country-list">
+    {% for country in countries %}
+      <li class="country-entry">
+        <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
+          <img src="https://flagcdn.com/h40/{{ country.code|lower }}.png" alt="{{ country.name }}" class="flag-icon">
+          {{ country.name }}
+        </a>
+      </li>
+    {% empty %}
+      <li>Brak dostępnych danych dla tej kategorii.</li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    <a href="{% url 'categories' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to category list
+    </a>
+  </p>
 </div>
-
-<input type="text" id="countrySearch" placeholder="Wyszukaj kraj..." class="search-bar">
-
-<ul class="country-list">
-  {% for country in countries %}
-    <li class="country-entry">
-      <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
-        <img src="https://flagcdn.com/h40/{{ country.code|lower }}.png" alt="{{ country.name }}" class="flag-icon">
-        {{ country.name }}
-      </a>
-    </li>
-  {% empty %}
-    <li>Brak dostępnych danych dla tej kategorii.</li>
-  {% endfor %}
-</ul>
-
-<p><a href="{% url 'categories' %}">← Wróć do listy kategorii</a></p>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("countrySearch");

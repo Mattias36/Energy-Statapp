@@ -1,0 +1,47 @@
+.heatmap-container {
+    text-align: center;
+    padding: 2rem;
+}
+
+.heatmap-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.slider-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.styled-slider {
+    width: 40%;
+    cursor: pointer;
+}
+
+.year-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0057b7;
+}
+
+#map{
+    height: 600px; 
+    width: auto;
+    margin-top: 20px; 
+    border-radius: 10px;
+    
+}
+
+.map-spacing {
+    height: 20px;
+}
+

@@ -25,17 +25,30 @@
     padding-top: 30%; /* Adjust this value for a taller map, e.g., 75% */
 }
 
-.image img {
-    max-width: 30%; /* Zapewnia, że obrazek będzie responsywny */
-    border-radius: 10px; /* Dodanie zaokrąglonych rogów do obrazka */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Dodanie delikatnego cienia do obrazka */
+/* w nowej wersji usunięto*/
+
+/* .image img {
+    max-width: 30%;
+    border-radius: 10px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .reverse .image {
     order: 1;
 }
 
-/* Ograniczenie wielkości zdjęcia w sekcji Misja i Wartości */
+
 .reverse .image img {
     max-width: 250px;
+} */
+
+.animated-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+}
+
+.animated-section.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
