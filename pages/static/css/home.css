@@ -1,0 +1,41 @@
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: #e0f0ff;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+}
+
+.info-section {
+    padding: 2rem;
+    background-color: #ffffff;
+    margin: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-container {
+    width: 100%;
+    max-width: 600px; /* Maximum width of the container */
+    margin: auto; /* Center the container */
+    position: relative;
+    overflow: hidden;
+    padding-top: 30%; /* Adjust this value for a taller map, e.g., 75% */
+}
+
+.image img {
+    max-width: 30%; /* Zapewnia, że obrazek będzie responsywny */
+    border-radius: 10px; /* Dodanie zaokrąglonych rogów do obrazka */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Dodanie delikatnego cienia do obrazka */
+}
+
+.reverse .image {
+    order: 1;
+}
+
+/* Ograniczenie wielkości zdjęcia w sekcji Misja i Wartości */
+.reverse .image img {
+    max-width: 250px;
+}
