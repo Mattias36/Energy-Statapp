@@ -688,3 +688,56 @@ ul li a {
     line-height: 1.5;
 }
 
+.hero {
+    background: linear-gradient(135deg, #4684db, #84bce2);
+    color: white;
+    text-align: center;
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 70%);
+    animation: pulseBackground 5s infinite;
+}
+
+@keyframes pulseBackground {
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 0.6; }
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: bold;
+    animation: slideIn 1s ease-in-out;
+}
+
+.hero-title span {
+    color: #ffcc00;
+    text-shadow: 0 4px 8px rgba(255, 204, 0, 0.6);
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-subtitle {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
