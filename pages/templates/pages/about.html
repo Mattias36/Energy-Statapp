@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_content %}
+
+<!-- Wizualizacja biura -->
+<section class="info-section animated-section">
+    <h2>Nasze biuro</h2>
+    <div class="content">
+        <div class="text">
+            <p>Nasze biuro to przestrzeń, w której kreatywność i współpraca są na pierwszym miejscu.</p>
+        </div>
+        <div class="image">
+            <img src="{% static 'images/office1.jpg' %}" alt="Zewnętrzny widok biurowca" class="hover-effect">
+        </div>
+    </div>
+</section>
+
+<!-- Misja firmy -->
+<section class="info-section animated-section">
+    <h2>Nasza misja</h2>
+    <div class="content">
+        <div class="text">
+            <p>Udostępniamy dokładne dane energetyczne, które wspierają świadome decyzje.</p>
+        </div>
+        <div class="image">
+            <img src="{% static 'images/office2.jpg' %}" alt="Nowoczesne wnętrze biura" class="hover-effect">
+        </div>
+    </div>
+</section>
+
+
+<!-- Sekcja FAQ -->
+<section class="info-section animated-section">
+    <h2>FAQ – Najczęściej Zadawane Pytania</h2>
+    <details>
+        <summary>Jak działa aplikacja?</summary>
+        <p>Aplikacja pobiera dane z europejskich źródeł i pozwala na ich analizę.</p>
+    </details>
+    <details>
+        <summary>Czy mogę pobrać raport </summary>
+        <p>Tak! Możesz wygenerować raport png zestawiając dwa kraje i pobrać dane dla wybranych kategorii.</p>
+    </details>
+</section>
+
+{% endblock %}

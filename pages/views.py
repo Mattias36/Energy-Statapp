@@ -194,3 +194,7 @@ def heatmap_data_view(request):
 
 def heatmap_page_view(request):
     return render(request, "pages/heatmap.html")
+
+def about_view(request):
+    return render(request, "pages/about.html")
+

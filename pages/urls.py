@@ -9,5 +9,7 @@ urlpatterns = [
     path("categories/<int:category_id>/", views.category_detail, name="category_detail"),
     path('heatmap/', views.heatmap_page_view, name='heatmap'),
     path('heatmap-data/', views.heatmap_data_view, name='heatmap-data'),
+    path("about/", views.about_view, name="about"),
+
 
 ]

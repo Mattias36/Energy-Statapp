@@ -1,19 +1,135 @@
 {% extends "base.html" %}
 {% load static %}
-{% load custom_filter %}
 
 {% block page_content %}
 
 <!-- Sekcja Powitalna -->
 <section class="hero">
     <div class="hero-content">
+        <h1>Witamy w Energy Statistic App</h1>
+        <p>Analizuj dane energetyczne Europy w intuicyjny sposób.</p>
+        <a href="{% url 'categories' %}" class="cta-button">Przeglądaj kategorie</a>
+    </div>
+</section>
+
+<!-- Sekcja O Nas -->
+<section class="info-section">
+  
+    <h3>Gdzie jesteśmy?</h3>
+    <p>Nasze biuro znajduje się w sercu Wrocławia, w Polsce.</p>
+
+    <div class="container">
+        <div class="section">
+            <h2>Adres</h2>
+            <p><strong>Energy Statistic App Office</strong></p>
+            <p>📍 ul. Świdnicka 12, Wrocław, Polska</p>
+            <p>☎️ +48 123 456 789</p>
+            <p>✉️ <a href="mailto:kontakt@energyapp.pl">kontakt@energyapp.pl</a></p>
+        </div>
+
+      <div class="section">
+        <h2>Znajdź nas na mapie</h2>
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2419.6813940162826!2d17.03334851572278!3d51.10792381831948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc20b6cd941e1%3A0x30a163b8599a5a6!2s%C5%9Awidnicka+12%2C+50-067+Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1673032492481!5m2!1spl!2spl"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            style="border: 0;">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Sekcja Co Oferujemy -->
+<section class="info-section animated-section">
+    <h2>Nasze funkcje</h2>
+    <ul>
+        <li>📊 <strong>Interaktywne wykresy</strong> – dynamiczne analizy.</li>
+        <li>🔍 <strong>Porównania krajów</strong> – eksploruj dane.</li>
+        <li>📈 <strong>Prognozy zużycia energii</strong> – zaawansowane modele.</li>
+        <li>📜 <strong>Raporty PDF</strong> – eksportuj dane.</li>
+    </ul>
+</section>
+
+<!-- Link do strony "O nas" -->
+<section class="info-section animated-section">
+    <h2>Dowiedz się więcej o nas</h2>
+    <p>Chcesz wiedzieć więcej o naszej misji i biurze?</p>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let sections = document.querySelectorAll(".animated-section");
+
+        function revealSections() {
+            sections.forEach(section => {
+                let position = section.getBoundingClientRect().top;
+                let windowHeight = window.innerHeight;
+
+                if (position < windowHeight - 100) {
+                    section.classList.add("visible");
+                }
+            });
+        }
+
+        window.addEventListener("scroll", revealSections);
+        revealSections();
+    });
+</script>
+
+
+{% endblock %}
+
+
+<!-- Sekcja Powitalna
+<section class="hero">
+    <div class="hero-content">
+        <h1>Witamy w Energy Statistic App</h1>
+        <p>Analizuj dane energetyczne Europy w intuicyjny sposób.</p>
+        <a href="{% url 'categories' %}" class="cta-button">Przeglądaj kategorie</a>
+    </div>
+</section> -->
+
+<!-- Sekcja Mapy
+<section class="info-section">
+    <h2>Mapa produkcji energii</h2>
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!..." allowfullscreen></iframe>
+    </div>
+</section> -->
+
+<!-- Sekcja Co Oferujemy
+<section class="info-section">
+    <h2>Nasze funkcje</h2>
+    <ul>
+        <li>📊 <strong>Interaktywne wykresy</strong> – dynamiczne analizy.</li>
+        <li>🔍 <strong>Porównania krajów</strong> – eksploruj dane.</li>
+        <li>📈 <strong>Prognozy zużycia energii</strong> – zaawansowane modele.</li>
+        <li>📜 <strong>Raporty PDF</strong> – eksportuj dane.</li>
+    </ul>
+</section> -->
+
+<!-- Link do strony "O nas"  -->
+<!-- <section class="info-section">
+    <h2>Dowiedz się więcej o nas</h2>
+    <p>Chcesz wiedzieć więcej o naszej misji i biurze?</p>
+    <a href="{% url 'about' %}" class="cta-button">Przejdź do sekcji "O nas"</a>
+</section> -->
+
+
+
+<!-- Sekcja Powitalna --> 
+<!-- <section class="hero">
+    <div class="hero-content">
       <h1>Witamy w Energy Statistic App</h1>
       <p>Odkrywaj szczegółowe dane na temat produkcji i konsumpcji energii w Europie.</p>
     </div>
-  </section>
+  </section> -->
   
 <!-- Sekcja O Nas -->
-<section id="about" class="info-section">
+<!-- <section id="about" class="info-section">
     <h2>O projekcie</h2>
     <p><strong>Energy Statistic App</strong> pomaga Ci odkrywać dane energetyczne z krajów europejskich.</p>
   
@@ -40,11 +156,11 @@
             style="border: 0;">
           </iframe>
         </div>
-      </div>
-    </div>
-  </section>
+      </div> -->
+    <!-- </div>
+  </section> --> 
   
- <!-- Wizualizacja biura -->
+ <!-- Wizualizacja biura
 <section class="info-section">
   <h2>Nasze biuro</h2>
   <div class="content">
@@ -55,9 +171,9 @@
         <img src="{% static 'images/office1.jpg' %}" alt="Zewnętrzny widok biurowca">
       </div>
   </div>
-</section>
+</section> -->
 
-<!-- Firma -->
+<!-- Firma
 <section class="info-section">
   <h2>Nasza misja</h2>
   <div class="content">
@@ -68,9 +184,9 @@
         <img src="{% static 'images/office2.jpg' %}" alt="Nowoczesne wnętrze biura">
       </div>
   </div>
-</section>
+</section> -->
 
-<!-- Sekcja Co Oferujemy -->
+<!-- Sekcja Co Oferujemy
 <section id="offer" class="info-section">
   <h2>Co oferujemy</h2>
   <ul>
@@ -82,7 +198,7 @@
     <li><strong>Generowanie raportów PDF:</strong> Twórz raporty do pobrania.</li>
     <li><strong>Panel użytkownika:</strong> Zapisuj preferencje i historię zapytań.</li>
   </ul>
-</section>
+</section> -->
 
 <!-- Pasek krajów -->
 <!-- <section class="country-selector">
@@ -96,5 +212,3 @@
   </div>
 </section> -->
 
-
-{% endblock %}
