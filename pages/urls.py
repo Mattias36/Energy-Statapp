@@ -3,6 +3,7 @@ from pages import views
 
 urlpatterns = [
     path("", views.home, name='home'),
+    path("about_us/", views.about_us, name="about_us"),
     path("categories/", views.categories, name="categories"),
     path('country/<str:country_code>/', views.country_view, name='country_view'),
     path('compare_data/', views.compare_data, name='compare_data'),

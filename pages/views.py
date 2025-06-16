@@ -9,6 +9,32 @@ from utils.stats_average import stats_average
 from utils.predictions import predict_future_usage, format_future_usage
 
 def home(request):
+    top6 = (
+        EnergyData.objects
+        .filter(
+            category__domain__name="Energy Balance",
+            category__name="Production",
+            year=2021
+        )
+        .values('country__code', 'country__name')
+        .annotate(total_value=Sum('value'))
+        .order_by('-total_value')[:6]
+    )
+
+    top6_countries = [
+        {
+            'code': row['country__code'],
+            'name': row['country__name'],
+            'rank': i + 1,
+            'total': row['total_value']  # <-- dodajemy wartość produkcji
+        }
+        for i, row in enumerate(top6)
+    ]
+
+    return render(request, "pages/home.html", {
+        'top6_countries': top6_countries
+    })
+def about_us(request):
     selected_country_code = request.GET.get('country')
     countries = Country.objects.all()
 
@@ -44,9 +70,7 @@ def home(request):
         'total_years': [y for y in years if y in total_by_year],
         'total_values': [round(total_by_year[y], 3) for y in years if y in total_by_year],
     }
-    return render(request, "pages/home.html", context)
-
-# funkcjonalnosc home() przeniesiono w country_view().
+    return render(request, "pages/about_us.html", context)
 
 def categories(request):
     categories = EnergyCategory.objects.all()
