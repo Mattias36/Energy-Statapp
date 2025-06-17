@@ -1,6 +1,6 @@
 .hero-section {
     position: relative;
-    height: 60vh; 
+    height: 70vh; 
     width: 100%;
     overflow: hidden;
     
@@ -32,15 +32,34 @@
     font-size: 2.5rem;
     color: white;
     text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    font-weight: 100;
 }
 
+.title-section {
+    position: relative;
+    background-color: #149e7e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    margin-top: 0;  /* <-- kluczowe */
+}
+
+.title {
+    text-align: center;
+    color: #f9f9f9;
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 0;
+}
 .top-countries-section {
     text-align: center;
     padding: 2rem 1rem;
   }
 
 .top6{
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 100;
 }
 .top-countries-grid {
@@ -71,11 +90,8 @@
   margin-bottom: 0.5rem;
 }
 
-
-
 .rank {
     display: block;
-    
     text-align: center;
     font-weight: 200;
     font-size: 1.5rem;
@@ -116,4 +132,54 @@
 .country-tooltip-wrapper:hover .country-tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+.dyanmic-chart-section {
+    padding: 40px 0;
+    text-align: center;
+}
+  
+.dynamic-chart-title {
+    font-size: 2rem;
+    font-weight: 100;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#dynamicChart {
+    max-width: 1000px;
+    max-height: 500px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+  
+.year-range-label{
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.learn-more{
+    position: relative;
+    text-align: center;
+}
+
+.learn-more-title{
+    font-size: 2rem;
+    font-weight: 100;
+}
+
+.learn-more a{
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #149e7e;
+    font-size: 1.5rem;
+    font-weight: bold;
+    
+}
+
+.learn-more a:hover{
+    text-decoration: underline;
 }

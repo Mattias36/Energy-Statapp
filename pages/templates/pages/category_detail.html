@@ -6,7 +6,7 @@
   <div class="category-header">
     <img src="{% static 'icons/' %}{{ category.name|to_slug }}.png"
          alt="Ikona kategorii" class="category-icon-large">
-    <h1>{{ category.name|remove_units }}</h1>
+    <h1 style="font-weight: 100;">{{ category.name|remove_units }}</h1>
   </div>
 
   <input type="text" id="countrySearch" placeholder="Search..." class="search-bar">

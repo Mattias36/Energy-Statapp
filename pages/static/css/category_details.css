@@ -12,8 +12,8 @@
 }
   
 .category-icon-large {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     margin-bottom: 10px;
 }
 
@@ -34,6 +34,7 @@
     padding: 0;
     margin: 0 auto;
     max-width: 800px;
+    
 }
 
 .country-entry {
@@ -55,7 +56,7 @@
     align-items: center;
     text-decoration: none;
     color: #333;
-    font-weight: 500;
+    font-weight: 100;
 }
 
   
@@ -72,7 +73,7 @@
     display: inline-flex;
     align-items: center;
     text-decoration: none;
-    color: #0057b7;
+    color: #149e7e;
     font-size: 1.2rem;
     font-weight: bold;
 }

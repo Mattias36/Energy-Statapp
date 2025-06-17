@@ -5,7 +5,7 @@
 
 .heatmap-title {
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: 100;
     margin-bottom: 20px;
 }
 
@@ -19,18 +19,45 @@
 
 .slider-label {
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 100;
 }
 
 .styled-slider {
     width: 40%;
     cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #149e7e;
+    border-radius: 3px;
+    outline: none;
 }
+
+.styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #12e1b1;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.styled-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background-color: #149e7e;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
 
 .year-display {
     font-size: 1.2rem;
-    font-weight: bold;
-    color: #0057b7;
+    font-weight: 300;
+    color: #149e7e;
 }
 
 #map{

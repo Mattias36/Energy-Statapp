@@ -13,6 +13,7 @@
 
 .country-text {
     flex: 0 0 60%;
+    font-size: large;
 }
 
 .country-flag {
@@ -26,6 +27,7 @@
     text-align: center;
     font-size: 2.2rem;
     margin-bottom: 2rem;
+    font-weight: 100;
 }
 
 /* info-section zdefiniowane w home */

@@ -7,8 +7,12 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from utils.stats_average import stats_average
 from utils.predictions import predict_future_usage, format_future_usage
+from django.core.serializers.json import DjangoJSONEncoder
+import random
+import json
 
 def home(request):
+    
     top6 = (
         EnergyData.objects
         .filter(
@@ -22,18 +26,42 @@ def home(request):
     )
 
     top6_countries = [
-        {
-            'code': row['country__code'],
-            'name': row['country__name'],
-            'rank': i + 1,
-            'total': row['total_value']  # <-- dodajemy wartość produkcji
-        }
-        for i, row in enumerate(top6)
-    ]
+    {
+        'code': row['country__code'],
+        'name': row['country__name'],
+        'rank': i + 1,
+        'value': round(row['total_value'], 2)
+    }
+    for i, row in enumerate(top6)
+]
+
+    # dane do wykresu (losowo 10 krajów)
+    countries = list(Country.objects.values_list('name', flat=True))
+    selected = random.sample(countries, min(10, len(countries)))
+    data_by_country = {}
+
+    for country in selected:
+        values = (
+            EnergyData.objects
+            .filter(
+                country__name=country,
+                category__name="Final energy consumption"
+            )
+            .order_by('year')
+            .values('year', 'value')
+        )
+        data_by_country[country] = {v['year']: v['value'] for v in values}
+
+    chart_data = {
+        "countries": selected,
+        "data_by_country": data_by_country
+    }
 
     return render(request, "pages/home.html", {
-        'top6_countries': top6_countries
+        'top6_countries': top6_countries,
+        'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder)
     })
+
 def about_us(request):
     selected_country_code = request.GET.get('country')
     countries = Country.objects.all()

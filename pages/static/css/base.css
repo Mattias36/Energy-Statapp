@@ -9,14 +9,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #0057b7;
+    background-color: #149e7e;
     padding: 1rem 2rem;
     color: white;
 }
 
 .navbar .logo {
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 100;
 }
 
 .nav-links {
@@ -28,7 +28,8 @@ body {
 .nav-links li a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 100;
+    font-size: 1.25rem;
 }
 
 .nav-links li a:hover {
@@ -38,7 +39,7 @@ body {
 .footer {
     text-align: center;
     padding: 1rem;
-    background-color: #0057b7;
+    background-color: #149e7e;
     color: white;
     margin-top: 2rem;
 }

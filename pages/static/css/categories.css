@@ -1,13 +1,14 @@
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Dokładnie 4 kolumny */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 20px;
   
-    justify-content: center; /* Wyśrodkowanie całej siatki w poziomie */
+    justify-content: center; 
     padding: 0 40px;
-    max-width: fit-content;  /* Dopasowuje szerokość siatki do jej zawartości */
-    margin: 0 auto;          /* Centrowanie w kontenerze */
+    max-width: fit-content;  
+    margin: 0 auto;          
   }
+
 .category-card {
     display: flex;
     flex-direction: column;
@@ -34,5 +35,5 @@
   
 .category-name {
     text-align: center;
-    font-weight: bold;
+    font-weight: 100;
 }

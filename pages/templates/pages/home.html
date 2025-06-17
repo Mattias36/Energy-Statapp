@@ -8,6 +8,10 @@
   </div>
 </div>
 
+<div class="title-section">
+  <h2 class="title">Explore the energy data for European countries with us</h2>
+</div>
+
 <div class="top-countries-section">
   <h2 class="top6">Top 6 Countries in Production 2021</h2>
   <div class="top-countries-grid">
@@ -18,7 +22,7 @@
       <div class="country-tooltip-wrapper">
         {{ country.name }}
         <span class="country-tooltip-text">
-          {{ country.total|floatformat:2 }} PJ
+          {{ country.value|floatformat:2 }} PJ
         </span>
       </div>
     </div>
@@ -27,6 +31,130 @@
   </div>
 </div>
 
+<div class="dynamic-chart-section">
+  <h2 class="dynamic-chart-title">Final Energy Consumption preview</h2>
+  <div id="year-range-label" class="year-range-label"></div>
+  <canvas id="dynamicChart"></canvas>
+</div>
+
+<div class="learn-more">
+  <h2 class="learn-more-title">Explore our categories and data</h2>
+    <a href="{% url 'categories' %}">Learn more</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const chartData = {{ chart_data|safe }};
+
+  const countries = chartData.countries;
+  const dataByCountry = chartData.data_by_country;
+
+  const ctx = document.getElementById('dynamicChart').getContext('2d');
+  let chart;
+
+  function getRandomCountries(count = 3) {
+    const shuffled = [...countries].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
+  function getDataRange(country, start, end) {
+    const raw = dataByCountry[country];
+    const entries = Object.entries(raw)
+      .filter(([y]) => y >= start && y <= end)
+      .sort((a, b) => a[0] - b[0]);  // posortuj lata
+    return entries.map(([_, v]) => v);
+  }
+
+  function getRandomColor() {
+    const r = Math.floor(100 + Math.random() * 155);
+    const g = Math.floor(100 + Math.random() * 155);
+    const b = Math.floor(100 + Math.random() * 155);
+    return `rgba(${r},${g},${b},0.8)`;
+  }
+
+  function updateChart(randomCountries, start, end) {
+    const labels = Array.from({length: end - start + 1}, (_, i) => start + i);
+    const datasets = randomCountries.map(country => ({
+      label: country,
+      data: getDataRange(country, start, end),
+      borderColor: getRandomColor(),
+      backgroundColor: 'transparent',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.3
+    }));
+
+    // Aktualizacja opisu zakresu lat
+    document.getElementById("year-range-label").textContent =
+      `Year range: ${start} – ${end}`;
+
+    if (chart) {
+      chart.data.labels = labels;
+      chart.data.datasets = datasets;
+      chart.update();
+    } else {
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            title: {
+              display: true,
+              
+            },
+            tooltip: {
+              callbacks: {
+                label: context => `${context.dataset.label}: ${context.parsed.y.toFixed(2)} PJ`
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Year'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Energy (PJ)'
+              }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // ⏳ Przykład dynamicznej animacji co 5 sekund
+  let currentRange = 0;
+  let currentCountries = getRandomCountries();
+
+  function cycleChart() {
+    const ranges = [
+      [2000, 2010],
+      [2011, 2021]
+    ];
+    const [start, end] = ranges[currentRange];
+    updateChart(currentCountries, start, end);
+    currentRange = (currentRange + 1) % ranges.length;
+
+    // Co dwa zakresy – nowe kraje
+    if (currentRange === 0) {
+      currentCountries = getRandomCountries();
+    }
+  }
+
+  cycleChart(); // uruchom pierwszy raz
+  setInterval(cycleChart, 5000); // co 5 sekund zmień
+</script>
 
 
 {% endblock page_content %}
