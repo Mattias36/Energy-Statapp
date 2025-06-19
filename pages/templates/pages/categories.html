@@ -2,7 +2,17 @@
 {% load static %}
 {% load custom_filter %}
 {% block page_content %}
-<h1 style="text-align: center; margin-bottom: 30px; font-weight: 100;">Select category</h1>
+
+<div class="category-info-section">
+  <div class="category-info-overlay">
+    <h2>Understanding Energy Categories</h2>
+    <p>
+      Explore different types of energy data such as production, consumption, and transformation.
+      Each category gives you insight into how energy is generated and used across European countries.
+      Click on a category to see available data by country and year.
+    </p>
+  </div>
+</div>
 
 <div class="category-grid">
   {% for category in categories %}
@@ -14,5 +24,10 @@
     </a>
    
   {% endfor %}
+  
 </div>
+
+
+
+
 {% endblock %}

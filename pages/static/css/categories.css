@@ -2,7 +2,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
     gap: 20px;
-  
     justify-content: center; 
     padding: 0 40px;
     max-width: fit-content;  
@@ -13,7 +12,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #f9f9f9;
+    background: #ffff;
     padding: 20px;
     border-radius: 15px;
     text-decoration: none;
@@ -23,10 +22,12 @@
 }
   
 .category-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    
+    background: #149e7ec8;
+    
 }
-  
+    
 .category-icon {
     width: 64px;
     height: 64px;
@@ -36,4 +37,37 @@
 .category-name {
     text-align: center;
     font-weight: 100;
+    font-size: 1.15rem;
+}
+
+.category-info-section {
+    background-image: url("../images/energy_background.jpg");
+    background-size: cover;
+    background-position: center;
+    
+    padding: 80px 20px;
+    margin-bottom: 3rem;
+    position: relative;
+    max-width: 100vw;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    
+}
+
+.category-info-overlay {
+    background-color: rgba(0, 0, 0, 0.6); 
+    padding: 40px;
+    border-radius: 15px;
+}
+
+.category-info-overlay h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 300;
+}
+
+.category-info-overlay p {
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
