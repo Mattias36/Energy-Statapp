@@ -22,34 +22,35 @@ def get_trend_percentage(data, source_name):
         return None
     return round(((end - start) / start) * 100, 2)
 
-
 def format_nuclear_status(latest_value, total_energy_value):
-    #Jeśli brakuje danych lub total = 0, zwracamy info
+    # Jeśli brakuje danych lub total = 0, zwracamy info
     if latest_value is None or total_energy_value in (None, 0):
-        return format_html('<span style="color:gray;">No data available</span>')
+        return format_html('<span class="nodata">⚪ No data available</span>')
 
     # procentowy udzial energii jadrowej
     nuclear_percentage = (latest_value / total_energy_value) * 100 if total_energy_value else 0
     if nuclear_percentage > 10:
         return format_html(
-            '<span style="color:green;">Good ({}%)</span>',
+            '<span class="good">🟢 Good ({}%)</span>',
             f"{nuclear_percentage:.2f}"
         )
     else:
         return format_html(
-            '<span style="color:red;">Poor ({}%)</span>',
+            '<span class="poor">🔴 Poor ({}%)</span>',
             f"{nuclear_percentage:.2f}"
         )
 
 def format_gas_trend(trend):
-    return format_html(
-        '<span style="color:{};">{}%</span>',
-        "green" if trend and trend > 0 else "red",
-        trend if trend is not None else "–"
-    )
+    # kolorowanie trendu gazowego – zielony dla wzrostu, czerwony dla spadku, szary dla braku danych
+    if trend is None:
+        return format_html('<span class="nodata">⚪ –</span>')
+    elif trend > 0:
+        return format_html('<span class="good">🟢 +{}%</span>', f"{trend:.2f}")
+    else:
+        return format_html('<span class="poor">🔴 {}%</span>', f"{trend:.2f}")
+
 # +? format dla innych funkcji, wartosci thresholds porownujace cala europe i formatowanie na ich podstawie,
 # profil uzytkownika na ktorym wybiera parametry istotne do wyswietlenia
-
 
 def get_countryinfo(country_name):
     ''' return dla polski rzedu:

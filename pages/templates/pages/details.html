@@ -24,7 +24,7 @@
 <h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
 
 <!-- update for bubbles for better view --->
-<div class="info-section">
+<div class="chart-section">
   <h2 style="font-weight: 100;">Energy Summary Overview</h2>
 <div class="insights bubble-grid">
   <div class="bubble tooltip">
@@ -50,8 +50,54 @@
 </div>
 <canvas id="energyChart" width="800" height="400"></canvas>
 
+<div class="legend">
+  <strong style="display:block; margin-bottom: 6px;">Legend:</strong>
+  
+  <span>
+    <span style="background-color: rgba(0,128,255,0.15);
+                 border: 1px solid #aaa;
+                 display: inline-block;
+                 width: 18px;
+                 height: 12px;
+                 vertical-align: middle;
+                 margin-right: 6px;"></span>
+    EU Average
+  </span> &nbsp;|&nbsp;
+
+  <span>
+    <span style="background: linear-gradient(to right, #1FA774 50%, #D7263D 50%);
+                 border: 1px solid #aaa;
+                 display: inline-block;
+                 width: 20px;
+                 height: 12px;
+                 vertical-align: middle;
+                 margin-right: 6px;"></span>
+    Country Share <small>(🟢 better, 🔴 worse)</small>
+  </span> &nbsp;|&nbsp;
+
+  <span>
+    <span style="background-color: #ccc;
+                 display: inline-block;
+                 width: 18px;
+                 height: 12px;
+                 border: 1px solid #aaa;
+                 vertical-align: middle;
+                 margin-right: 6px;"></span>
+    No Data
+  </span>
+</div>
+
 <div class="predictions">
-  <h3 style="text-align: center; margin-bottom: 20px;">Predicted Energy Usage</h3>
+  <h3 style="text-align: center; margin-bottom: 5px;">Energy Forecast: 2025 → 2026</h3>
+<p style="text-align: center; font-size: 0.85rem; color: #555; margin-bottom: 10px;">
+  Predicted energy change by source:
+</p>
+<div class="legend" style="text-align:center; margin-bottom: 20px;">
+  <span style="color:#1FA774;">🟢 ↑ Increase</span> &nbsp;|&nbsp;
+  <span style="color:#D7263D;">🔴 ↓ Decrease</span> &nbsp;|&nbsp;
+  <span style="color:#888;">⚪ → No change</span>
+</div>
+
   <div class="bubble-grid">
       {% for source, info in future_usage.items %}
       {# iteracja po wszystkich zrdolach energii i ich danych w future_usage , zmienne val_2025,20206#}
@@ -72,6 +118,7 @@
             </span>
           <span class="tooltiptext">{{ info.tooltip }}</span>
       </div>
+      
       {% endif %}
       {% endwith %}
       {% endfor %}
@@ -123,46 +170,61 @@
 
 
   <!-- CHART CONTROLS SECTION -->
-  <div class="chart-section">
-    <h2>Total {{ selected_category.name }} Chart </h2>
+<div class="chart-section">
+  <h2 style="text-align: center; font-weight: 400; margin-bottom: 6px;">
+    {{ selected_category.name }} — Total Energy Output
+  </h2>
+  <p style="text-align: center; color:#666; font-size: 0.9rem; margin-bottom: 1.5rem;">
+    Visualize your country's data and compare trends across Europe.
+  </p>
 
-    <div class="form-group">
-      <label for="yearRange">Select Year Range:</label>
-      <input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}" 
-             value="{{ total_years|length|add:" -1" }}" step="1" 
-             oninput="updateChartRange(this.value)">
-      <span id="selectedRangeLabel">All years</span>
-    </div>
+  <!-- Year Range -->
+  <div class="form-group">
+    <label for="yearRange" class="control-label">📅 Year Range:</label>
+    <input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}" 
+           value="{{ total_years|length|add:" -1" }}" step="1" 
+           oninput="updateChartRange(this.value)">
+    <span id="selectedRangeLabel" class="range-label">All years</span>
+  </div>
 
-    <div class="form-group">
-      <label for="graph_type">Select Graph Type:</label>
-      <select name="graph_type" id="graph_type">
-          <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Bar</option>
-          <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Line</option>
-      </select>
-    </div>
+  <!-- Graph Type -->
+  <div class="form-group">
+    <label for="graph_type" class="control-label">📈 Graph Type:</label>
+    <select name="graph_type" id="graph_type" class="input-wide">
+        <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Bar Chart</option>
+        <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Line Chart</option>
+    </select>
+  </div>
 
-    <div class="button-group">
-      <button id="generateGraphButton">Generate Graph</button>
-      <button id="saveImageButton">Save</button>
-    </div>
+  <!-- Country Comparison -->
+  <div class="form-group">
+    <label for="compareCountries" class="control-label">🌍 Compare with other countries:</label>
+    <select id="compareCountries" name="compare_countries" multiple class="input-wide">
+      {% for country in countries %}
+        {% if country.name != selected_country %}
+          <option value="{{ country.code }}">{{ country.name }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    <small style="color:#777; display: block; margin-top: 4px;">
+      (Hold Ctrl / Cmd to select multiple countries)
+    </small>
+  </div>
 
-    <form id="compareForm" class="form-group">
-      <label for="compareCountries">Compare with other countries:</label>
-      <select id="compareCountries" name="compare_countries" multiple>
-        {% for country in countries %}
-          {% if country.name != selected_country %}
-            <option value="{{ country.code }}">{{ country.name }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-    </form>
+  <!-- Action buttons -->
+  <div class="form-group button-group">
+    <button id="generateGraphButton">🔄 Generate</button>
+    <button id="saveImageButton">💾 Save</button>
+  </div>
 
-    <div id="graphContainer" style="display:none; margin-top: 20px;">
-        <canvas id="totalChart" width="800" height="400"></canvas>
-        {{ total_years|json_script:"total-years" }}
-        {{ total_values|json_script:"total-values" }}
-    </div>
+  <!-- Chart output -->
+  <div id="graphContainer" style="display:none; margin-top: 20px;">
+    <canvas id="totalChart" width="800" height="400"></canvas>
+    {{ total_years|json_script:"total-years" }}
+    {{ total_values|json_script:"total-values" }}
+  </div>
+</div>
+
   </div>
 
 </div>
@@ -247,7 +309,7 @@
               responsive: true,
               plugins: {
                 legend: {
-                  position: "bottom"
+                  display: false
                 },
                 tooltip: {
                   callbacks: {
