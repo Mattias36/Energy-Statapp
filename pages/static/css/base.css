@@ -3,6 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
+    line-height: 1.6;
 }
 
 .navbar {
@@ -23,6 +24,8 @@ body {
     list-style: none;
     display: flex;
     gap: 1rem;
+    padding: 0;
+    margin: 0;
 }
 
 .nav-links li a {
@@ -32,8 +35,10 @@ body {
     font-size: 1.25rem;
 }
 
-.nav-links li a:hover {
+.nav-links li a:hover,
+.nav-links li a:focus-visible {
     text-decoration: underline;
+    outline: none;
 }
 
 .footer {
@@ -43,3 +48,60 @@ body {
     color: white;
     margin-top: 2rem;
 }
+
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .navbar {
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .hamburger {
+        order: 2;
+        margin-left: auto;
+    }
+
+    .nav-links {
+        order: 3;
+        width: 100%;
+    }
+
+    .logo {
+        order: 1;
+    }
+}
+
+
+.hamburger {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #149e7e;
+        margin-top: 1rem;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li a {
+        padding: 0.75rem 1rem;
+    }
+}
+

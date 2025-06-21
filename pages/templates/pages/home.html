@@ -17,19 +17,19 @@
   <div class="top-countries-grid">
     {% for country in top6_countries %}
     <div class="country-card">
-      <img src="https://flagcdn.com/w80/{{ country.code|lower }}.png" alt="{{ country.name }}">
-      <span class="rank">{{ forloop.counter }}</span>
-      <div class="country-tooltip-wrapper">
-        {{ country.name }}
-        <span class="country-tooltip-text">
+      <div class="flag-wrapper">
+        <img src="https://flagcdn.com/w80/{{ country.code|lower }}.png" alt="{{ country.name }}">
+        <div class="flag-overlay">
           {{ country.value|floatformat:2 }} PJ
-        </span>
+        </div>
       </div>
+      <span class="rank">{{ forloop.counter }}</span>
+      <div class="country-name">{{ country.name }}</div>
     </div>
-    
     {% endfor %}
   </div>
 </div>
+
 
 <div class="dynamic-chart-section">
   <h2 class="dynamic-chart-title">Final Energy Consumption preview</h2>

@@ -14,14 +14,17 @@
     <!-- Pasek nawigacji -->
     <nav class="navbar">
         <div class="logo"><i class="fa-solid fa-chart-line"></i> Energy Statistic App</div>
-        <ul class="nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="{% url 'about_us' %}">About Us</a></li>
-            <li><a href="{% url 'heatmap' %}">Heatmap</a></li>
-            <li><a href="{% url 'categories' %}">Categories</a></li>
-
+        
+      
+        <ul class="nav-links" id="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="{% url 'about_us' %}">About Us</a></li>
+          <li><a href="{% url 'heatmap' %}">Heatmap</a></li>
+          <li><a href="{% url 'categories' %}">Categories</a></li>
         </ul>
-    </nav>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+      </nav>
+      
 
     <!-- Główna treść -->
     <main class="content">
@@ -36,4 +39,10 @@
 </body>
 </html>
 
-
+<script>
+    function toggleMenu() {
+      const nav = document.getElementById('nav-links');
+      nav.classList.toggle('active');
+    }
+  </script>
+  
