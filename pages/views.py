@@ -186,10 +186,19 @@ def country_view(request, country_code):
         "country_rankings": country_rankings,
     })
 
-    future_usage = format_future_usage(data)
+    future_usage_raw = format_future_usage(data)
+    future_usage_fixed = {}
+
+    for source, info in future_usage_raw.items():
+        predictions = info.get('predictions', {})
+        fixed_predictions = {int(year): val for year, val in predictions.items()}
+        future_usage_fixed[source] = {
+            **info,
+            'predictions': fixed_predictions
+        }
 
     context.update({
-        'future_usage': future_usage,
+        'future_usage': future_usage_fixed,
     })
 
     wiki_info = get_countryinfo(selected_country.name)

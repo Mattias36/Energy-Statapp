@@ -10,7 +10,7 @@
       <h2>{{ wiki_info.title }}</h2>
       <p><strong>Desricption:</strong> {{ wiki_info.description }}</p>
       <p>{{ wiki_info.summary }}</p>
-<!--?      <p><a href="{{ wiki_info.content_urls }}">source</a></p>-->
+      <!-- <p><a href="{{ wiki_info.content_urls }}">source</a></p> -->
     </div>
 
     {% if wiki_info.thumbnail %}
@@ -21,40 +21,41 @@
   </div>
   {% endif %}
 
-<h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
+  <h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
 
-<!-- update for bubbles for better view --->
-<div class="info-section">
-  <h2 style="font-weight: 100;">Energy Summary Overview</h2>
-<div class="insights bubble-grid">
-  <div class="bubble tooltip">
-    <strong>Nuclear Investment Status:</strong><br>
-    {{ nuclear_status|safe }}
-    <span class="tooltiptext">Percentage share of nuclear energy in the total energy production of a given country.</span>
+  <!-- ENERGY SUMMARY SECTION -->
+  <div class="info-section">
+    <h2 style="font-weight: 100;">Energy Summary Overview</h2>
+    <div class="insights bubble-grid">
+      <div class="bubble tooltip">
+        <strong>Nuclear Investment Status:</strong><br>
+        {{ nuclear_status|safe }}
+        <span class="tooltiptext">Percentage share of nuclear energy in the total energy production of a given country.</span>
+      </div>
+      <div class="bubble tooltip">
+        <strong>Natural Gas Trend:</strong><br>
+        {{ gas_status|safe }}
+        <span class="tooltiptext">Annual percentage change in the share of natural gas in energy production.</span>
+      </div>
+      <div class="bubble tooltip">
+        <strong>Total Renewables (Latest Year):</strong><br>
+        <span>{{ renewable_total }}</span>
+        <span class="tooltiptext">Total energy production from renewable sources.</span>
+      </div>
+      <div class="bubble tooltip">
+        <strong>Waste / Non-Renewable Waste:</strong><br>
+        <span>{{ waste_total }}</span>
+        <span class="tooltiptext">Energy derived from non-renewable waste, including some industrial and municipal residues.</span>
+      </div>
+    </div>
+    <canvas id="energyChart" width="800" height="400"></canvas>
   </div>
-  <div class="bubble tooltip">
-    <strong>Natural Gas Trend:</strong><br>
-    {{ gas_status|safe }}
-    <span class="tooltiptext">Annual percentage change in the share of natural gas in energy production.</span>
-  </div>
-  <div class="bubble tooltip">
-    <strong>Total Renewables (Latest Year):</strong><br>
-    <span>{{ renewable_total }}</span>
-    <span class="tooltiptext">Total energy production from renewable sources.</span>
-  </div>
-  <div class="bubble tooltip">
-    <strong>Waste / Non-Renewable Waste:</strong><br>
-    <span>{{ waste_total }}</span>
-    <span class="tooltiptext">Energy derived from non-renewable waste, including some industrial and municipal residues.</span>
-  </div>
-</div>
-<canvas id="energyChart" width="800" height="400"></canvas>
 
-<div class="predictions">
-  <h3 style="text-align: center; margin-bottom: 20px;">Predicted Energy Usage</h3>
-  <div class="bubble-grid">
+  <!-- PREDICTED ENERGY USAGE SECTION -->
+  <div class="info-section">
+    <h2 style="font-weight: 100;">Predicted Energy Usage</h2>
+    <div class="insights bubble-grid">
       {% for source, info in future_usage.items %}
-      {# iteracja po wszystkich zrdolach energii i ich danych w future_usage , zmienne val_2025,20206#}
       {% with val_2025=info.predictions.2025 val_2026=info.predictions.2026 %}
       {% if val_2025 and val_2025 != 0 and val_2026 and val_2026 != 0 %}
       <div class="bubble">
@@ -69,103 +70,65 @@
               {% endif %}
             ">
               {{ val_2025|floatformat:1 }} → {{ val_2026|floatformat:1 }}
-            </span>
+          </span>
           <span class="tooltiptext">{{ info.tooltip }}</span>
       </div>
       {% endif %}
       {% endwith %}
       {% endfor %}
+
+    </div>
+      <div id="predictionGraphContainer" style="display: none; margin-top: 30px;">
+        <canvas id="predictionChart"></canvas>
+    </div>
+        {{ future_usage|json_script:"future-usage" }}
   </div>
-</div>
 
-</div>
-  <!-- INSIGHTS SECTION -->
- 
-   
-
-  <!-- TABLE SECTION - tabela do testowania czy dane się zgadzają--> 
-  <!-- <section class="data-table">
-    <h2>Dane produkcji energii</h2>
-    {% if selected_country %}
-      <p>Wyświetlanie danych dla <strong>{{ selected_country }}</strong></p>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Źródło energii</th>
-              {% for year in years %}
-                <th>{{ year }}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for source, values_by_year in table.items %}
-            <tr>
-              <td>{{ source }}</td>
-              {% for year in years %}
-                <td>{{ values_by_year|get_item:year|floatformat:3|default:"–" }}</td>
-              {% endfor %}
-            </tr>
-            {% endfor %}
-            <tr class="total-row">
-              <td>Łącznie</td>
-              {% for year in years %}
-                <td>{{ total_by_year|get_item:year|floatformat:3|default:"–" }}</td>
-              {% endfor %}
-            </tr>
-          </tbody>
-        </table>
+  <!-- TOTAL PRODUCTION CHART SECTION -->
+  <div class="info-section">
+    <h2 style="font-weight: 100;">Total {{ selected_category.name }} Chart</h2>
+    <div class="chart-section">
+      <div class="form-group">
+        <label for="yearRange">Select Year Range:</label>
+        <input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}"
+               value="{{ total_years|length|add:" -1" }}" step="1"
+               oninput="updateChartRange(this.value)">
+        <span id="selectedRangeLabel">All years</span>
       </div>
-    {% else %}
-      <p>Wybierz kraj, aby wyświetlić dane.</p>
-    {% endif %}
-    </section> -->
 
+      <div class="form-group">
+        <label for="graph_type">Select Graph Type:</label>
+        <select name="graph_type" id="graph_type">
+            <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Bar</option>
+            <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Line</option>
+        </select>
+      </div>
 
-  <!-- CHART CONTROLS SECTION -->
-  <div class="chart-section">
-    <h2>Total {{ selected_category.name }} Chart </h2>
+      <div class="button-group">
+        <button id="generateGraphButton">Generate Graph</button>
+        <button id="saveImageButton">Save</button>
+      </div>
 
-    <div class="form-group">
-      <label for="yearRange">Select Year Range:</label>
-      <input type="range" id="yearRange" min="0" max="{{ total_years|length|add:" -1" }}" 
-             value="{{ total_years|length|add:" -1" }}" step="1" 
-             oninput="updateChartRange(this.value)">
-      <span id="selectedRangeLabel">All years</span>
-    </div>
+      <form id="compareForm" class="form-group">
+        <label for="compareCountries">Compare with other countries:</label>
+        <select id="compareCountries" name="compare_countries" multiple>
+          {% for country in countries %}
+            {% if country.name != selected_country %}
+              <option value="{{ country.code }}">{{ country.name }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </form>
 
-    <div class="form-group">
-      <label for="graph_type">Select Graph Type:</label>
-      <select name="graph_type" id="graph_type">
-          <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Bar</option>
-          <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Line</option>
-      </select>
-    </div>
-
-    <div class="button-group">
-      <button id="generateGraphButton">Generate Graph</button>
-      <button id="saveImageButton">Save</button>
-    </div>
-
-    <form id="compareForm" class="form-group">
-      <label for="compareCountries">Compare with other countries:</label>
-      <select id="compareCountries" name="compare_countries" multiple>
-        {% for country in countries %}
-          {% if country.name != selected_country %}
-            <option value="{{ country.code }}">{{ country.name }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-    </form>
-
-    <div id="graphContainer" style="display:none; margin-top: 20px;">
-        <canvas id="totalChart" width="800" height="400"></canvas>
-        {{ total_years|json_script:"total-years" }}
-        {{ total_values|json_script:"total-values" }}
+      <div id="graphContainer" style="display:none; margin-top: 20px;">
+          <canvas id="totalChart" width="800" height="400"></canvas>
+          {{ total_years|json_script:"total-years" }}
+          {{ total_values|json_script:"total-values" }}
+      </div>
     </div>
   </div>
-
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -269,6 +232,62 @@
               }
             }
         };
+        let predictionChartInstance = null;
+
+document.querySelectorAll(".bubble").forEach(bubble => {
+  bubble.addEventListener("click", function () {
+    const sourceName = this.querySelector("strong").innerText;
+
+    const futureUsageData = JSON.parse(document.getElementById('future-usage').textContent);
+    const predictionData = futureUsageData[sourceName];
+
+    if (!predictionData) return;
+
+    const labels = Object.keys(predictionData.predictions);
+    const values = Object.values(predictionData.predictions);
+
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: `${sourceName} (Predicted Usage)`,
+        data: values,
+        fill: true,
+        borderColor: "rgba(255, 159, 64, 1)",
+        backgroundColor: "rgba(255, 159, 64, 0.2)",
+        tension: 0.3
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: `Forecast for ${sourceName}`
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+
+    if (predictionChartInstance) {
+      predictionChartInstance.destroy();
+    }
+
+    const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+    predictionChartInstance = new Chart(predictionCtx, config);
+
+    document.getElementById("predictionGraphContainer").style.display = "block";
+    document.getElementById("predictionGraphContainer").scrollIntoView({ behavior: "smooth" });
+  });
+});
 
         new Chart(document.getElementById("energyChart"), config);
 
