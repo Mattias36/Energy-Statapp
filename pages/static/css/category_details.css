@@ -81,3 +81,85 @@
 .back-button i {
     margin-right: 0.5rem;
 }
+
+/* Scrollable list */
+.scrollable-list-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    padding-right: 5px;
+  }
+  
+  /* Custom scrollbar styling (optional) */
+  .scrollable-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollable-list-wrapper::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+  }
+  
+  /* Info Panel */
+  .info-panel {
+    position: fixed;
+    top: 100px;
+    right: 0;
+    width: 300px;
+    height: auto;
+    background-color: #f9f9f9;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    z-index: 10;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    transform: translateX(100%);
+  }
+  
+  .info-panel.open {
+    transform: translateX(0);
+  }
+  
+  .info-toggle {
+    position: absolute;
+    left: -30px;
+    top: 20px;
+    background-color: #149e7e;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .info-content {
+    padding: 1rem;
+  }
+  
+  .info-content h3 {
+    margin-top: 0;
+    font-weight: 500;
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width:768px){
+    .info-toggle {
+        position: absolute;
+        left: -40px;
+        top: 20px;
+        background-color: #149e7e;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        }
+
+    }

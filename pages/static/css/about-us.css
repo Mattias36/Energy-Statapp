@@ -32,22 +32,41 @@
     padding-top: 30%; /* Adjust this value for a taller map, e.g., 75% */
 }
 
-/* w nowej wersji usunięto*/
+.features-grid-inside{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2rem;
+    padding: 2rem 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+} 
+    
+  
 
-/* .image img {
-    max-width: 30%;
-    border-radius: 10px; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+.feature-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
 }
 
-.reverse .image {
-    order: 1;
+.feature-card:hover {
+  transform: translateY(-5px);
 }
 
+.feature-card img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 0.5rem;
+}
 
-.reverse .image img {
-    max-width: 250px;
-} */
+.feature-card h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+}
 
 .animated-section {
     opacity: 0;
@@ -58,4 +77,16 @@
 .animated-section.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+@media (max-width:768px) {
+    .map-container {
+        width: 100%;
+        max-width: 600px; /* Maximum width of the container */
+        margin: auto; /* Center the container */
+        position: relative;
+        overflow: hidden;
+        padding-top: 60%; /* Adjust this value for a taller map, e.g., 75% */
+    }
+    
 }

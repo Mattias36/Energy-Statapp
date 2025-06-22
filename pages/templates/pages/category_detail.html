@@ -11,25 +11,43 @@
 
   <input type="text" id="countrySearch" placeholder="Search..." class="search-bar">
 
-  <ul class="country-list">
-    {% for country in countries %}
-      <li class="country-entry">
-        <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
-          <img src="https://flagcdn.com/h40/{{ country.code|lower }}.png" alt="{{ country.name }}" class="flag-icon">
-          {{ country.name }}
-        </a>
-      </li>
-    {% empty %}
-      <li>Brak dostępnych danych dla tej kategorii.</li>
-    {% endfor %}
-  </ul>
+  <!-- LISTA ZWIJANA -->
+  <div class="scrollable-list-wrapper">
+    <ul class="country-list">
+      {% for country in countries %}
+        <li class="country-entry">
+          <a href="{% url 'country_view' country.code %}?category={{ category.id }}">
+            <img src="https://flagcdn.com/h40/{{ country.code|lower }}.png" alt="{{ country.name }}" class="flag-icon">
+            {{ country.name }}
+          </a>
+        </li>
+      {% empty %}
+        <li>Brak dostępnych danych dla tej kategorii.</li>
+      {% endfor %}
+    </ul>
+  </div>
 
   <p>
     <a href="{% url 'categories' %}" class="back-button">
-        <i class="fas fa-arrow-left"></i> Back to category list
+      <i class="fas fa-arrow-left"></i> Back to category list
     </a>
   </p>
 </div>
+
+<!-- Panel informacyjny -->
+<div class="info-panel" id="infoPanel">
+  <div class="info-toggle" onclick="togglePanel()">
+    <span>&#x25C0;</span>
+  </div>
+  <div class="info-content">
+    <h3>About this Category</h3>
+    <p>{{ category_description }}</p>
+    <p style="text-decoration: underline;">
+      Use the search bar to find a specific country or explore the full list.
+    </p>
+  </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("countrySearch");
@@ -44,4 +62,18 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
+
+<script>
+  function togglePanel() {
+    const panel = document.getElementById("infoPanel");
+    panel.classList.toggle("open");
+  
+    const toggle = panel.querySelector(".info-toggle span");
+    toggle.innerHTML = panel.classList.contains("open") ? "&#x25B6;" : "&#x25C0;";
+  }
+</script>
+  
+
+
 {% endblock %}
+

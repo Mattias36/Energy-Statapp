@@ -106,17 +106,44 @@ def categories(request):
         'categories': categories
     })
 
+CATEGORY_DESCRIPTIONS = {
+    "Production": (
+        "The 'Production' category reflects the total amount of energy generated within a country "
+        "from all available sources. It includes energy derived from fossil fuels (like coal, oil, and gas), "
+        "renewable sources (such as wind, solar, hydro), and nuclear power. This metric is crucial for understanding "
+        "a country's self-sufficiency in energy generation and its reliance on domestic versus imported energy sources."
+    ),
+    "Final energy consumption": (
+        "This category provides insight into the total amount of energy consumed by end users in different sectors, "
+        "including households, transportation, industry, services, and agriculture. Unlike gross consumption, it excludes "
+        "energy losses during transformation and transmission. Understanding final consumption helps identify which sectors "
+        "are the most energy-intensive and where efficiency improvements can have the greatest impact."
+    ),
+    "Gross Electricity Generation, by Fuel  [TWh]": (
+        "This dataset presents the total electricity produced in a country, broken down by the type of fuel used "
+        "in the generation process. It includes electricity from conventional sources such as coal, natural gas, and nuclear, "
+        "as well as from renewable sources like wind, solar, and biomass. Analyzing this data reveals a country’s energy mix "
+        "and its progress towards sustainable and low-carbon electricity generation."
+    ),
+    "Gross Heat Generation [PJ]": (
+        "The 'Gross Heat Generation' category captures the total heat produced primarily in combined heat and power (CHP) "
+        "plants and heat-only boiler stations. It reflects the energy generated for heating purposes across residential, "
+        "commercial, and industrial buildings. Monitoring this data is essential for understanding thermal energy needs "
+        "and the role of district heating systems in national energy infrastructure."
+    )
+}
+
 def category_detail(request, category_id):
     category = get_object_or_404(EnergyCategory, id=category_id)
-    countries = Country.objects.filter(
-        energydata__category=category
-    ).distinct()
+    countries = Country.objects.filter(energydata__category=category).distinct()
+
+    description = CATEGORY_DESCRIPTIONS.get(category.name, "This category provides detailed energy data.")
 
     return render(request, "pages/category_detail.html", {
-        'category': category,
-        'countries': countries
+        "category": category,
+        "countries": countries,
+        "category_description": description
     })
-
 
 def country_view(request, country_code):
     countries = Country.objects.all()

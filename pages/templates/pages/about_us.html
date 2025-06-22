@@ -43,13 +43,27 @@
 <!-- What We Offer Section -->
 <section class="info-section animated-section">
   <h2 style="font-weight: 500;">Our Features</h2>
-  <ul>
-      <li>📊 <strong>Interactive Charts</strong> – dynamic analyses.</li>
-      <li>🔍 <strong>Country Comparisons</strong> – explore data.</li>
-      <li>📈 <strong>Energy Consumption Forecasts</strong> – advanced models.</li>
-      <li>📜 <strong>Country Comparison in PNG</strong> – export data.</li>
-  </ul>
+
+  <div class="features-grid-inside">
+    <div class="feature-card">
+      <img src="{% static 'images/chart-icon.png' %}" alt="Interactive Charts">
+      <h3>Interactive Charts</h3>
+    </div>
+    <div class="feature-card">
+      <img src="{% static 'images/compare-icon.png' %}" alt="Country Comparisons">
+      <h3>Country Comparisons</h3>
+    </div>
+    <div class="feature-card">
+      <img src="{% static 'images/heatmap-icon.png' %}" alt="Heatmap">
+      <h3>Heatmap</h3>
+    </div>
+    <div class="feature-card">
+      <img src="{% static 'images/save-icon.png' %}" alt="Save Graphs">
+      <h3>Save Graphs to PNG</h3>
+    </div>
+  </div>
 </section>
+
 
 <!-- About Us Link -->
 <section class="info-section animated-section">
