@@ -232,6 +232,49 @@ def country_view(request, country_code):
     context.update({
         'wiki_info': wiki_info
     })
+
+    category_name = selected_category.name.lower()
+    category_explanation = ""
+
+    if "final energy consumption" in category_name:
+        category_explanation = "Final Energy Consumption refers to the total energy consumed by end users like households, industry, and transportation."
+    elif "gross electricity generation" in category_name:
+        category_explanation = "Gross Electricity Generation includes all the electricity produced by power plants before subtracting the energy used by the plant itself."
+    elif "gross heat generation" in category_name:
+        category_explanation = (
+            "Gross Heat Generation refers to the total heat output by thermal systems for district heating or industrial purposes. "
+            "You can explore this data visually in the heatmap below."
+        )
+
+    context.update({
+        'category_explanation': category_explanation,
+    })
+
+    category_name = selected_category.name.lower()
+
+    if selected_category.pk == 12:
+        generation_data_qs = EnergyData.objects.filter(
+            country__code=country_code,
+            category=selected_category
+        ).select_related('source')
+
+        generation_data = defaultdict(dict)
+        years_set = set()
+
+        for record in generation_data_qs:
+            generation_data[record.source.name][record.year] = record.value
+            years_set.add(record.year)
+
+        generation_years = sorted(years_set)
+
+        # 5 sources max
+        limited_generation_data = dict(list(generation_data.items())[:5])
+
+        context.update({
+            'generation_data': limited_generation_data,  # limited to 5
+            'generation_years': generation_years,
+        })
+
     return render(request, "pages/details.html", context)
 
 # ?+ jesli wszystkie wiersze w tabeli sa puste nie wyswietlac caly wiersz
