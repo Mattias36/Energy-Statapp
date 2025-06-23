@@ -28,8 +28,12 @@ Energy-Statapp pozwala na wygodne poznawanie danych energetycznych krajów europ
   - Django REST Framework (dla API) 
 
 - **Baza danych:**  
-  - MySQL
- 
+  - SQLite3
+    
+- **Predykcja:**  
+  - collections.defaultdict
+  - numpy
+    
 ## 📂 Project Structure
 
 **ERD Diagram**
