@@ -1,19 +1,20 @@
 # Energy-Statapp
 
-Aplikacja webowa służąca do przeglądania, analizowania i wizualizacji danych statystycznych dotyczących zużycia energii w różnych krajach.
+Aplikacja webowa służąca do przeglądania, analizowania oraz wizualizacji danych statystycznych dotyczących zużycia energii w różnych krajach Europy.
 
 ## 🎯 Cel projektu
 
-Celem projektu jest stworzenie interaktywnego systemu, który umożliwia użytkownikom analizę danych energetycznych w podziale na kraje, źródła energii, kategorie oraz domeny. Dane importowane są z pliku Excel i prezentowane w postaci tabel oraz wykresów.
+Celem projektu jest stworzenie interaktywnej platformy umożliwiającej użytkownikom analizę danych energetycznych w podziale na kraje, źródła energii, kategorie oraz obszary tematyczne. Dane są importowane z pliku Excel i prezentowane w formie czytelnych tabel oraz dynamicznych wykresów.
 
 ## ✅ Funkcjonalności
 
-- Import danych z arkusza Excel.
-- Przeglądanie statystyk energetycznych w formie tabel.
-- Tworzenie interaktywnych wykresów (na podstawie wybranych kryteriów).
-- Eksport danych i wykresów do pliku PDF.
-- Logowanie i autoryzacja użytkowników.
-- Panel administratora (zarządzanie danymi i użytkownikami).
+- Interaktywne wykresy – dynamiczna wizualizacja danych.
+- Porównania krajów – szybkie zestawienia statystyk między wybranymi państwami.
+- Mapa ciepła (heatmap) – graficzne przedstawienie danych na mapie Europy.
+- Eksport wykresów – możliwość zapisania grafik w formacie PNG.
+
+## 🌍 O platformie
+Energy-Statapp pozwala na wygodne poznawanie danych energetycznych krajów europejskich. Dzięki interaktywnym wykresom i porównaniom między krajami, użytkownicy mogą łatwo analizować trendy i różnice w produkcji, zużyciu oraz transformacji energii.
 
 ## 🛠️ Technologie
 
@@ -27,7 +28,7 @@ Celem projektu jest stworzenie interaktywnego systemu, który umożliwia użytko
   - Django REST Framework (dla API) 
 
 - **Baza danych:**  
-  - PostgreSQL
+  - MySQL
  
 ## 📂 Project Structure
 
