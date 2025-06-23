@@ -36,7 +36,7 @@
 
     </div>
 
-    {% if wiki_info.thumbnail %}
+{% if wiki_info.thumbnail %}
     <div class="country-flag">
         <img src="{{ wiki_info.thumbnail }}" alt="Flaga lub grafika kraju">
     </div>
@@ -46,7 +46,7 @@
 
 
 
-  <h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
+<h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
 {% if "gross heat generation" in selected_category.name|lower %}
 <div class="info-section">
   <h2 style="font-weight: 100;">Map of Heat Production in Europe</h2>
@@ -428,15 +428,19 @@
       </div>
 
       <form id="compareForm" class="form-group">
-        <label for="compareCountries">Compare with other countries:</label>
-        <select id="compareCountries" name="compare_countries" multiple>
+        <label>Compare with other countries:</label>
+        <div id="checkboxContainer">
           {% for country in countries %}
             {% if country.name != selected_country %}
-              <option value="{{ country.code }}">{{ country.name }}</option>
+              <div class="checkbox-option">
+                <input type="checkbox" id="chk-{{ country.code }}" name="compare" value="{{ country.code }}">
+                <label for="chk-{{ country.code }}">{{ country.name }}</label>
+              </div>
             {% endif %}
           {% endfor %}
-        </select>
+        </div>
       </form>
+      
 
       <div id="graphContainer" style="display:none; margin-top: 20px;">
           <canvas id="totalChart" width="800" height="400"></canvas>
@@ -677,8 +681,8 @@ document.querySelectorAll(".bubble").forEach(bubble => {
             const type = graphTypeSelect.value;
 
             // Pobieranie krajów do porównania
-            const selectedOptions = Array.from(compareSelect.selectedOptions);
-            const selectedCodes = selectedOptions.map(opt => opt.value);
+            const checkedBoxes = document.querySelectorAll('input[name="compare"]:checked');
+            const selectedCodes = Array.from(checkedBoxes).map(box => box.value);
 
             let extraData = [];
 
@@ -728,6 +732,18 @@ document.querySelectorAll(".bubble").forEach(bubble => {
                 URL.revokeObjectURL(url);
             }, 'image/png');
         });
+
+        const checkboxes = document.querySelectorAll('input[name="compare"]');
+        checkboxes.forEach(box => {
+          box.addEventListener("change", () => {
+            const checked = Array.from(checkboxes).filter(b => b.checked);
+            if (checked.length > 5) {
+              box.checked = false;
+              alert("You can select up to 5 countries only.");
+            }
+          });
+        });
+
 });
 
         // Inicjalizacja
@@ -735,4 +751,5 @@ document.querySelectorAll(".bubble").forEach(bubble => {
     });
 </script>
 
+  
 {% endblock page_content %}
