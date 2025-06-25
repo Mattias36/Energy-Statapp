@@ -261,20 +261,51 @@ def country_view(request, country_code):
             category=selected_category
         ).select_related('source')
 
-        generation_data = defaultdict(dict)
+        raw_data = defaultdict(dict)
         years_set = set()
 
         for record in generation_data_qs:
-            generation_data[record.source.name][record.year] = record.value
+            raw_data[record.source.name][record.year] = record.value
             years_set.add(record.year)
 
         generation_years = sorted(years_set)
+        latest_year = max(generation_years)
 
-        # 5 sources max
-        limited_generation_data = dict(list(generation_data.items())[:5])
+        # ostatni rok w PIECHART, w trend graphie wszystkie
+        latest_year_data = {
+            fuel: values.get(latest_year, 0)
+            for fuel, values in raw_data.items()
+        }
+
+        # by valuee
+        sorted_data = sorted(latest_year_data.items(), key=lambda x: x[1], reverse=True)
+
+        # top7 + everything else -- other
+        top7 = sorted_data[:7]
+        other_total = sum(value for _, value in sorted_data[7:])
+
+        total = sum(value for _, value in top7) + other_total
+
+        percentage_data = {}
+        for year in generation_years:
+            year_data = {
+                fuel: raw_data[fuel].get(year, 0)
+                for fuel in raw_data
+            }
+
+            sorted_data = sorted(year_data.items(), key=lambda x: x[1], reverse=True)
+            top7 = sorted_data[:7]
+            other_total = sum(val for _, val in sorted_data[7:])
+            total = sum(val for _, val in top7) + other_total
+
+            for fuel, val in top7:
+                percentage_data.setdefault(fuel, {})[year] = round((val / total) * 100, 2)
+
+            if other_total > 0:
+                percentage_data.setdefault("Other", {})[year] = round((other_total / total) * 100, 2)
 
         context.update({
-            'generation_data': limited_generation_data,  # limited to 5
+            'generation_data': percentage_data,
             'generation_years': generation_years,
         })
 

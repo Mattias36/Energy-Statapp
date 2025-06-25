@@ -388,7 +388,7 @@ async function loadHeatInsight(countryCode, year = 2021) {
   <div class="info-section">
   <h2 style="font-weight: 100;">Gross Electricity Generation for specific category by year</h2>
         <div id="fuelBubbles" class="bubble-grid" style="margin-bottom: 20px;">
-      {% for fuel in generation_data.keys|slice:":5" %}
+      {% for fuel in generation_data.keys|slice:":8" %}
         <div class="bubble" data-fuel="{{ fuel }}">
           <strong>{{ fuel }}</strong>
         </div>
@@ -404,30 +404,25 @@ async function loadHeatInsight(countryCode, year = 2021) {
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const generationData = {{ generation_data|safe }};
-    const years = {{ generation_years|safe }};
+const generationData = {{ generation_data|safe }};
+const years = {{ generation_years|safe }};
+const latestYear = Math.max(...years);
 
-    const latestYear = Math.max(...years);
-    const pieLabels = [];
-    const pieData = [];
+const pieLabels = [];
+const pieData = [];
 
-    Object.keys(generationData).forEach(fuel => {
-      pieLabels.push(fuel);
-      pieData.push(generationData[fuel][latestYear] || 0);
-    });
+Object.entries(generationData).forEach(([fuel, yearMap]) => {
+  pieLabels.push(fuel);
+  pieData.push(yearMap[latestYear] ?? 0);  // % value
+});
 
-    const pieColors = [
-      "#FFB347",
-      "#FF9933",
-      "#ff8033",
-      "#cc6633",
-      "#ff6633",
-      "#ff856e",
-    ];
+const pieColors = [
+  "#FFB347", "#FF9933", "#ff8033", "#cc6633",
+  "#ff6633", "#ff856e", "#ffa07a", "#aaa"  // for "Other"
+];
 
-    // Pie chart config
-    const pieCtx = document.getElementById('pieChart').getContext('2d');
-    new Chart(pieCtx, {
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+new Chart(pieCtx, {
   type: 'pie',
   data: {
     labels: pieLabels,
@@ -442,67 +437,69 @@ async function loadHeatInsight(countryCode, year = 2021) {
     responsive: true,
     plugins: {
       legend: {
-        display: false  // hide legend
+        display: false
       },
       title: {
         display: true,
-        text: `Gross Electricity Generation by Fuel in ${latestYear} (Mtoe)`
+        text: `Electricity Generation Share by Fuel in ${latestYear} (%)`
       }
     }
   }
 });
 
 
-    let fuelChartInstance = null;
 
-    document.querySelectorAll("#fuelBubbles .bubble").forEach(bubble => {
-      bubble.addEventListener("click", function () {
-        const fuel = this.getAttribute("data-fuel");
-        const dataPoints = years.map(year => generationData[fuel][year] ?? null);
+let fuelChartInstance = null;
 
-        const data = {
-          labels: years,
-          datasets: [{
-            label: fuel + " (Mtoe)",
-            data: dataPoints,
-            fill: true,
-            borderColor: "rgba(0,128,255,0.7)",
-            backgroundColor: "rgba(64,182,255,0.3)",
-            tension: 0.3
-          }]
-        };
+document.querySelectorAll("#fuelBubbles .bubble").forEach(bubble => {
+  bubble.addEventListener("click", function () {
+    const fuel = this.getAttribute("data-fuel");
+    const dataPoints = years.map(year => generationData[fuel]?.[year] ?? 0);
 
-        const config = {
-          type: 'line',
-          data: data,
-          options: {
-            responsive: true,
-            plugins: {
-              title: {
-                display: true,
-                text: `Yearly ${fuel} Generation (Mtoe)`
-              },
-              legend: { display: false }
-            },
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
+    const data = {
+      labels: years,
+      datasets: [{
+        label: fuel + " (%)",
+        data: dataPoints,
+        fill: true,
+        borderColor: "rgba(0,128,255,0.7)",
+        backgroundColor: "rgba(64,182,255,0.3)",
+        tension: 0.3
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: `Yearly Share of ${fuel} (%)`
+          },
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
           }
-        };
-
-        if (fuelChartInstance) {
-          fuelChartInstance.destroy();
         }
+      }
+    };
 
-        const ctx = document.getElementById('fuelChart').getContext('2d');
-        fuelChartInstance = new Chart(ctx, config);
+    if (fuelChartInstance) {
+      fuelChartInstance.destroy();
+    }
 
-        document.getElementById('chartContainer').style.display = 'block';
-        document.getElementById('chartContainer').scrollIntoView({ behavior: "smooth" });
-      });
-    });
+    const ctx = document.getElementById('fuelChart').getContext('2d');
+    fuelChartInstance = new Chart(ctx, config);
+
+    document.getElementById('chartContainer').style.display = 'block';
+    document.getElementById('chartContainer').scrollIntoView({ behavior: "smooth" });
+  });
+});
+
   </script>
 
 
