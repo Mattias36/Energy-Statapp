@@ -4,6 +4,7 @@
 {% load static %}
 
 <div class="detail-wrapper">
+ 
 {% if wiki_info %}
   <div class="country-info-flex">
     <div class="country-text">
@@ -75,7 +76,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     ">?</div>
     <p style="margin: 0;">
-      See how <strong>{{ selected_country }}</strong> <img src="{{ wiki_info.thumbnail }}" alt="{{ selected_country }} flag" style="height: 20px; width: auto; border-radius: 3px;">  ranked among EU countries by Gross Heat Generation.
+      See how <strong>{{ selected_country }} </strong> <img src="{{ wiki_info.thumbnail }}" alt="{{ selected_country }} flag" style="height: 20px; width: auto; border-radius: 3px;"> in 2020 ranked among EU countries by Gross Heat Generation.
     </p>
   </div>
 </div>
@@ -83,9 +84,9 @@
     <table class="heat-table" style="width: 100%; margin-top: 20px;">
       <thead>
         <tr>
-          <th>Rank</th>
-          <th>Country</th>
-          <th>Heat (PJ)</th>
+          <th style="text-align: left;">Rank</th>
+          <th style="text-align: left;">Country</th>
+          <th style="text-align: left;">Heat (PJ)</th>
         </tr>
       </thead>
       <tbody id="heat-ranked-list"></tbody>
@@ -167,7 +168,7 @@ async function loadHeatInsight(countryCode, year = 2021) {
 
 
 {% if "gross heat generation" in selected_category.name|lower %}
-<div class="info-section">
+<!-- <div class="info-section">
   <h2 style="font-weight: 100;">Map of Heat Production in Europe</h2>
 
   <div class="controls">
@@ -236,7 +237,7 @@ async function loadHeatInsight(countryCode, year = 2021) {
   const slider = document.getElementById("yearSlider");
   slider.addEventListener("input", () => loadYear(slider.value));
   loadYear(slider.value);
-</script>
+</script> -->
 {% endif %}
 {% if selected_category.name|lower == "production" %}
   <!-- ENERGY SUMMARY SECTION -->
@@ -299,7 +300,7 @@ async function loadHeatInsight(countryCode, year = 2021) {
     {% for source, info in future_usage.items %}
       {% with val_2025=info.predictions.2025 val_2026=info.predictions.2026 %}
       {% if val_2025 is not None and val_2026 is not None and val_2026 > val_2025 %}
-      <div class="bubble up">
+      <div class="bubble up" id="bubble-up">
           <strong>{{ source }}</strong><br>
           <span>{{ val_2025|floatformat:3 }} → {{ val_2026|floatformat:3 }}</span>
           <span class="tooltiptext">{{ info.tooltip }}</span>
@@ -351,26 +352,10 @@ async function loadHeatInsight(countryCode, year = 2021) {
 {% if selected_category.pk == 12 %}
   <div class="info-section">
 
-    <div style="
-      display: flex;
-      gap: 40px;
-      align-items: center;
-      margin: 0 20px 30px 20px;
-    ">
+    <div class="electricity-insight-wrapper">
       <!-- Pie Chart -->
 
-      <div class="specific-insight" style="
-          flex: 1;
-          max-width: 450px;
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-          font-size: 1.1rem;
-          line-height: 1.4;
-          user-select: none;
-          background: transparent;
-          max-height: 350px;
-        ">
+      <div class="specific-insight">
         <h3 style="font-weight: 100; color: #ff9a24; margin-top: 0; margin-bottom: 15px;">Category Insight</h3>
         <div style="display: flex; align-items: center; gap: 15px;">
           <div style="
@@ -386,19 +371,15 @@ async function loadHeatInsight(countryCode, year = 2021) {
             justify-content: center;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
           ">?</div>
-<p style="margin: 0;">
-  Pie chart visualizes the sum of Gross Electricity Generation by different fuel sources for <strong>{{ selected_country }}</strong>
-  <img src="{{ wiki_info.thumbnail }}" alt="{{ selected_country }} flag" style="height: 20px; width: auto; border-radius: 3px;">.
-  Relative share (%) of each fuel type in the total electricity produced.
-</p>
+            <p style="margin: 0;">
+              Pie chart visualizes the sum of Gross Electricity Generation by different fuel sources for <strong>{{ selected_country }}</strong>
+              <img src="{{ wiki_info.thumbnail }}" alt="{{ selected_country }} flag" style="height: 20px; width: auto; border-radius: 3px;">.
+              Relative share (%) of each fuel type in the total electricity produced.
+            </p>
 
         </div>
       </div>
-              <div id="pieChartContainer" style="
-        flex: 1;
-        max-width: 550px;
-        height: 350px;
-      ">
+      <div id="pieChartContainer">
         <canvas id="pieChart" style="height: 100%; width: 100%;"></canvas>
       </div>
     </div>
@@ -574,6 +555,7 @@ async function loadHeatInsight(countryCode, year = 2021) {
       </div>
     </div>
   </div>
+  
 </div>
 
 
@@ -858,18 +840,12 @@ document.querySelectorAll(".bubble").forEach(bubble => {
             }, 'image/png');
         });
 
-        const checkboxes = document.querySelectorAll('input[name="compare"]');
-        checkboxes.forEach(box => {
-          box.addEventListener("change", () => {
-            const checked = Array.from(checkboxes).filter(b => b.checked);
-            if (checked.length > 5) {
-              box.checked = false;
-              alert("You can select up to 5 countries only.");
-            }
-          });
-        });
-
-});
+      
+      });
+      // Aktualizacja etykiety przy przesuwaniu suwaka
+      yearRange.addEventListener("input", (e) => {
+        updateChartRange(e.target.value);
+      });
 
         // Inicjalizacja
         updateChartRange(yearRange.value);

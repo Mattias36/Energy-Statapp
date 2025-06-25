@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filter %}
+{% block page_content %}
+
+<h2 class="rankings-title">Energy Rankings by Category</h2>
+<div class="rank-container">
+    
+    <form method="get" id="form-select">
+        <div class="select-wrapper">
+        <label for="categorySelect" id="select-title">Select a Category</label>
+        <select name="category_id" id="categorySelect">
+        
+          {% for category in categories %}
+            <option value="{{ category.id }}" {% if selected_category and selected_category.id == category.id %}selected{% endif %}>
+              {{ category.name|remove_units }}
+            </option>
+          {% endfor %}
+        </select>
+        </div>
+        
+        <div class="select-wrapper">
+        <label for="yearSelect" id="select-title" style="margin-left: 1rem;">Select Year</label>
+        <select name="year" id="yearSelect">
+          <option value="summary" {% if selected_year == "summary" %}selected{% endif %}>Summary (2000–2021)</option>
+          {% for y in year_range %}
+            <option value="{{ y }}" {% if selected_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+        </div>
+      </form>
+      
+  
+    {% if selected_category %}
+    <div class="ranking-wraper">
+      <h3 class="rankings-title">Ranking for {{ selected_category.name|remove_units }}</h3>
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Country</th>
+            <th>Total [{{ unit }}]</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in rankings %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>
+                <img src="https://flagcdn.com/h40/{{ item.code|lower }}.png" alt="{{ item.name }} flag" class="flag-icon-ranking">
+                {{ item.name }}
+              </td>
+              <td>{{ item.total|floatformat:2 }} </td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+  
+</div>
+
+{{ data_by_category|json_script:"rankings-data" }}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const select = document.getElementById("categorySelect");
+      const container = document.getElementById("rankingContainer");
+  
+      select.addEventListener("change", async function () {
+        const categoryId = this.value;
+        if (!categoryId) {
+          container.innerHTML = "";
+          return;
+        }
+  
+        try {
+          const response = await fetch(`/rankings/?category_id=${categoryId}`, {
+            headers: {
+              "X-Requested-With": "XMLHttpRequest"
+            }
+          });
+          const data = await response.json();
+  
+          if (data.rankings.length === 0) {
+            container.innerHTML = "<p>No data found for this category.</p>";
+            return;
+          }
+  
+        let html = `
+            <h3>Ranking for: ${data.category_name}</h3>
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Country</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+            `;
+
+        data.rankings.forEach((item, index) => {
+          const flagUrl = `https://flagcdn.com/w40/${item.code.toLowerCase()}.png`; // wymaga przesyłania kodu państwa!
+          html += `
+            <tr>
+              <td>${index + 1}</td>
+              <td><img src="${flagUrl}" alt="${item.name} flag"> ${item.name}</td>
+              <td>${item.total.toFixed(2)} PJ</td>
+            </tr>`;
+        });
+        
+        html += "</tbody></table>";
+
+          container.innerHTML = html;
+        } catch (error) {
+          console.error("Failed to fetch rankings:", error);
+          container.innerHTML = "<p>Something went wrong. Try again later.</p>";
+        }
+      });
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("form-select");
+      document.getElementById("categorySelect").addEventListener("change", () => form.submit());
+      document.getElementById("yearSelect").addEventListener("change", () => form.submit());
+    });
+  </script>
+  
+{% endblock page_content %}

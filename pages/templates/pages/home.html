@@ -12,24 +12,16 @@
   <h2 class="title">Explore the energy data for European countries with us</h2>
 </div>
 
+ 
 <div class="top-countries-section">
-  <h2 class="top6">Top 6 Countries in Production 2021</h2>
-  <div class="top-countries-grid">
-    {% for country in top6_countries %}
-    <div class="country-card">
-      <div class="flag-wrapper">
-        <img src="https://flagcdn.com/w80/{{ country.code|lower }}.png" alt="{{ country.name }}">
-        <div class="flag-overlay">
-          {{ country.value|floatformat:2 }} PJ
-        </div>
-      </div>
-      <span class="rank">{{ forloop.counter }}</span>
-      <div class="country-name">{{ country.name }}</div>
-    </div>
-    {% endfor %}
+    <h2 id="top6-title" class="top6">Top 6 Countries in Production 2021</h2>
+    <div class="top-countries-grid fade-in"  id="top6-grid"></div>
   </div>
 </div>
 
+<div class="learn-more">
+  <a href="{% url 'rankings' %}">See the full ranking here</a>
+</div>
 
 <div class="dynamic-chart-section">
   <h2 class="dynamic-chart-title">Final Energy Consumption preview</h2>
@@ -39,12 +31,12 @@
 
 <div class="learn-more">
   <h2 class="learn-more-title">Explore our data</h2>
-    <a href="{% url 'categories' %}">Learn more</a>
+  <a href="{% url 'categories' %}">Learn more</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const chartData = {{ chart_data|safe }};
+  const chartData = {{ chart_data| safe }};
 
   const countries = chartData.countries;
   const dataByCountry = chartData.data_by_country;
@@ -73,7 +65,7 @@
   }
 
   function updateChart(randomCountries, start, end) {
-    const labels = Array.from({length: end - start + 1}, (_, i) => start + i);
+    const labels = Array.from({ length: end - start + 1 }, (_, i) => start + i);
     const datasets = randomCountries.map(country => ({
       label: country,
       data: getDataRange(country, start, end),
@@ -106,7 +98,7 @@
             legend: { position: 'top' },
             title: {
               display: true,
-              
+
             },
             tooltip: {
               callbacks: {
@@ -154,6 +146,50 @@
 
   cycleChart(); // uruchom pierwszy raz
   setInterval(cycleChart, 5000); // co 5 sekund zmień
+  
+</script>
+
+<script>
+  const top6ByYear = {{ top6_by_year|safe }};
+  const grid = document.getElementById("top6-grid");
+  const title = document.getElementById("top6-title");
+
+  const years = Object.keys(top6ByYear).sort((a, b) => b - a);
+  let index = 0;
+
+  function updateTop6() {
+    const year = years[index];
+    const countries = top6ByYear[year];
+
+    // Faza wyjścia
+    grid.classList.remove("fade-in");
+    grid.classList.add("fade-out");
+
+    setTimeout(() => {
+      // Aktualizacja treści
+      title.textContent = `Top 6 Countries in Production ${year}`;
+      grid.innerHTML = countries.map((country, i) => `
+        <div class="country-card">
+          <div class="flag-wrapper">
+            <img src="https://flagcdn.com/w80/${country.code.toLowerCase()}.png" alt="${country.name}">
+            <div class="flag-overlay">${country.value} PJ</div>
+          </div>
+          <span class="rank">${i + 1}</span>
+          <div class="country-name">${country.name}</div>
+        </div>
+      `).join("");
+
+      // Faza wejścia
+      grid.classList.remove("fade-out");
+      grid.classList.add("fade-in");
+
+      index = (index + 1) % years.length;
+  }, 400);
+}
+
+
+  updateTop6();
+  setInterval(updateTop6, 5000);
 </script>
 
 

@@ -13,27 +13,29 @@ import json
 
 def home(request):
     
-    top6 = (
-        EnergyData.objects
-        .filter(
-            category__domain__name="Energy Balance",
-            category__name="Production",
-            year=2021
-        )
-        .values('country__code', 'country__name')
-        .annotate(total_value=Sum('value'))
-        .order_by('-total_value')[:6]
-    )
+    top6_by_year = {}
 
-    top6_countries = [
-    {
-        'code': row['country__code'],
-        'name': row['country__name'],
-        'rank': i + 1,
-        'value': round(row['total_value'], 2)
-    }
-    for i, row in enumerate(top6)
-]
+    for year in range(2021, 1999, -1):
+        top6 = (
+            EnergyData.objects
+            .filter(
+                category__domain__name="Energy Balance",
+                category__name="Production",
+                year=year
+            )
+            .values('country__code', 'country__name')
+            .annotate(total_value=Sum('value'))
+            .order_by('-total_value')[:6]
+        )
+        top6_by_year[year] = [
+            {
+                'code': row['country__code'],
+                'name': row['country__name'],
+                'rank': i + 1,
+                'value': round(row['total_value'], 2)
+            }
+            for i, row in enumerate(top6)
+        ]
 
     # dane do wykresu (losowo 10 krajów)
     countries = list(Country.objects.values_list('name', flat=True))
@@ -58,7 +60,7 @@ def home(request):
     }
 
     return render(request, "pages/home.html", {
-        'top6_countries': top6_countries,
+        'top6_by_year': json.dumps(top6_by_year, cls=DjangoJSONEncoder),
         'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder)
     })
 
@@ -385,4 +387,58 @@ def heat_insight_view(request, country_code):
             "neighbors": neighbors,
             "full_list": full_list,
         }
+    })
+
+
+def rankings_view(request):
+    categories = EnergyCategory.objects.all()
+    selected_id = request.GET.get("category_id")
+    selected_year = request.GET.get("year", "summary")  # "summary" = sumaryczne 2000–2021
+    rankings = []
+    unit = None
+
+    if selected_id:
+        try:
+            selected_category = EnergyCategory.objects.get(id=selected_id)
+        except EnergyCategory.DoesNotExist:
+            selected_category = None
+    else:
+        selected_category = EnergyCategory.objects.filter(name__iexact="Production").first()
+        selected_id = selected_category.id if selected_category else None
+
+    if selected_category:
+        unit_map = {
+            "Production": "Mtoe",
+            "Final energy consumption": "Mtoe",
+            "Gross Electricity Generation, by Fuel  [TWh]": "TWh",
+            "Gross Heat Generation [PJ]": "PJ"
+        }
+        unit = unit_map.get(selected_category.name, "")
+
+        queryset = EnergyData.objects.filter(category=selected_category)
+        if selected_year != "summary":
+            queryset = queryset.filter(year=int(selected_year))
+
+        data = (
+            queryset
+            .values("country__name", "country__code")
+            .annotate(total=Sum("value"))
+            .order_by("-total")
+        )
+        rankings = [
+            {
+                "name": entry["country__name"],
+                "code": entry["country__code"],
+                "total": entry["total"]
+            }
+            for entry in data
+        ]
+
+    return render(request, "pages/rankings.html", {
+        "categories": categories,
+        "selected_category": selected_category,
+        "unit": unit,
+        "rankings": rankings,
+        "selected_year": selected_year,
+        "year_range": list(range(2021, 1999, -1))
     })
