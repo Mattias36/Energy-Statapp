@@ -187,6 +187,7 @@ def country_view(request, country_code):
         'countries': countries,
         # full name for details.html "selected_country" par.
         'selected_country': selected_country.name,
+        'selected_country_code': selected_country.code,
         'selected_category': data[0].category if data else None,
         'table': table,
         'years': years,
@@ -325,3 +326,63 @@ def heatmap_data_view(request):
 
 def heatmap_page_view(request):
     return render(request, "pages/heatmap.html")
+
+
+def heat_insight_view(request, country_code):
+    year = int(request.GET.get("year", 2020))
+
+    try:
+        category = EnergyCategory.objects.get(name="Gross Heat Generation [PJ]")
+    except EnergyCategory.DoesNotExist:
+        return JsonResponse({"error": "Category not found"}, status=404)
+
+    # total heat descending
+    ranking_qs = EnergyData.objects.filter(category=category, year=year).values(
+        'country__name', 'country__code').annotate(total_heat=Sum('value')).order_by('-total_heat')
+
+    ranking = list(ranking_qs)
+
+    #  index of requested country
+    index = next((i for i, entry in enumerate(ranking) if entry['country__code'] == country_code), None)
+    if index is None:
+        return JsonResponse({"error": "Country data not found in ranking"}, status=404)
+
+    top_3 = ranking[:3]
+
+    neighbors_count = 2
+    start = max(3, index - neighbors_count)
+    end = index + neighbors_count + 1
+    neighbors = ranking[start:end]
+    neighbors = [n for n in neighbors if n not in top_3]
+
+    country_entry = ranking[index]
+
+    # rank to all entries ---> list rank
+    full_list = []
+    for i, entry in enumerate(ranking):
+        full_list.append({
+            'rank': i + 1,
+            'country__name': entry['country__name'],
+            'country__code': entry['country__code'],
+            'total_heat': entry['total_heat'],
+        })
+
+    # Insight text
+    country_total = country_entry['total_heat']
+    insight = (
+        f"In {year}, {country_entry['country__name']} generated {round(country_total, 2)} PJ of heat energy. "
+        f"It ranks {index + 1} among all countries in this category."
+    )
+
+    return JsonResponse({
+        "year": year,
+        "category": category.name,
+        "insight": insight,
+        "ranking": {
+            "top_3": top_3,
+            "country_index": index + 1,
+            "country_entry": country_entry,
+            "neighbors": neighbors,
+            "full_list": full_list,
+        }
+    })

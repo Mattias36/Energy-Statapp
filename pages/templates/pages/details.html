@@ -44,9 +44,128 @@
   </div>
 {% endif %}
 
+    <h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
+{% if selected_category.pk == 13 %}
+
+  <div class="info-section" id="heat-insight-container" style="margin-top: 30px; display: none;">
+{#    <h2 style="font-weight: 100;">Gross Heat Generation Overview</h2>#}
+     <div class="specific-insight" style="
+  width: 95%;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  user-select: none;
+  background: transparent;
+  margin-bottom: 20px;
+">
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <div style="
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      background-color: rgba(255,154,36,0.7);
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    ">?</div>
+    <p style="margin: 0;">
+      See how <strong>{{ selected_country }}</strong> <img src="{{ wiki_info.thumbnail }}" alt="{{ selected_country }} flag" style="height: 20px; width: auto; border-radius: 3px;">  ranked among EU countries by Gross Heat Generation.
+    </p>
+  </div>
+</div>
+
+    <table class="heat-table" style="width: 100%; margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Country</th>
+          <th>Heat (PJ)</th>
+        </tr>
+      </thead>
+      <tbody id="heat-ranked-list"></tbody>
+    </table>
+
+    <div style="margin-top: 20px; font-style: italic;" id="heat-details"></div>
+  </div>
+
+  <script>
+    function clearDetails() {
+      document.getElementById('heat-details').innerText = '';
+    }
+
+    function showDetails(country, heat, rank) {
+      document.getElementById('heat-details').innerText =
+        `${country} generated ${heat} PJ heat energy. Rank: ${rank}`;
+    }
+
+async function loadHeatInsight(countryCode, year = 2021) {
+  try {
+    const response = await fetch(`/heat-insight/${countryCode}/?year=${year}`);
+    const data = await response.json();
+
+    if (data.error) {
+      console.error(data.error);
+      return;
+    }
+
+    const tbody = document.getElementById('heat-ranked-list');
+    tbody.innerHTML = '';
 
 
-<h1 class="page-title">{{ selected_category.name|remove_units }} for {{ selected_country }}</h1>
+    data.ranking.full_list.forEach(entry => {
+      const tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.title = `Click to see details for ${entry.country__name}`;
+
+      if (entry.country__code === countryCode) {
+        tr.style.fontWeight = 'bold';
+        tr.style.backgroundColor = '#ffe4b2';
+      }
+
+      const rankTd = document.createElement('td');
+      rankTd.innerText = entry.rank;
+      tr.appendChild(rankTd);
+
+      const countryTd = document.createElement('td');
+      countryTd.innerText = entry.country__name;
+      tr.appendChild(countryTd);
+
+      const heatTd = document.createElement('td');
+      heatTd.innerText = Number(entry.total_heat).toFixed(2);
+      tr.appendChild(heatTd);
+
+      tr.addEventListener('click', () => {
+        showDetails(entry.country__name, Number(entry.total_heat).toFixed(2), entry.rank);
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("heat-insight-container").style.display = "block";
+
+  } catch (err) {
+    console.error("err:", err);
+  }
+}
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const currentCountry = "{{ selected_country_code }}";
+      if (currentCountry) {
+        loadHeatInsight(currentCountry, {{ generation_latest_year|default:2021 }});
+      }
+    });
+  </script>
+{% endif %}
+
+
 {% if "gross heat generation" in selected_category.name|lower %}
 <div class="info-section">
   <h2 style="font-weight: 100;">Map of Heat Production in Europe</h2>
@@ -169,6 +288,7 @@
     </div>
   </div>
 {% endif %}
+
 {% if selected_category.name|lower == "production" %}
   <!-- PREDICTED ENERGY USAGE SECTION -->
 <div class="info-section">
@@ -226,6 +346,8 @@
   {{ future_usage|json_script:"future-usage" }}
 </div>
 {% endif %}
+
+
 {% if selected_category.pk == 12 %}
   <div class="info-section">
 
@@ -236,13 +358,6 @@
       margin: 0 20px 30px 20px;
     ">
       <!-- Pie Chart -->
-      <div id="pieChartContainer" style="
-        flex: 1;
-        max-width: 450px;
-        height: 350px;
-      ">
-        <canvas id="pieChart" style="height: 100%; width: 100%;"></canvas>
-      </div>
 
       <div class="specific-insight" style="
           flex: 1;
@@ -272,15 +387,23 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
           ">?</div>
 <p style="margin: 0;">
-  Pie chart visualizes the composition of Gross Electricity Generation by different fuel sources for <strong>{{ selected_country }}</strong>
+  Pie chart visualizes the sum of Gross Electricity Generation by different fuel sources for <strong>{{ selected_country }}</strong>
   <img src="{{ wiki_info.thumbnail }}" alt="{{ selected_country }} flag" style="height: 20px; width: auto; border-radius: 3px;">.
   Relative share (%) of each fuel type in the total electricity produced.
 </p>
 
         </div>
       </div>
+              <div id="pieChartContainer" style="
+        flex: 1;
+        max-width: 550px;
+        height: 350px;
+      ">
+        <canvas id="pieChart" style="height: 100%; width: 100%;"></canvas>
+      </div>
     </div>
   </div>
+
   <div class="info-section">
   <h2 style="font-weight: 100;">Gross Electricity Generation for specific category by year</h2>
         <div id="fuelBubbles" class="bubble-grid" style="margin-bottom: 20px;">
@@ -315,37 +438,39 @@
     const pieColors = [
       "#FFB347",
       "#FF9933",
-      "#FF8000",
-      "#CC6600",
-      "#FF6600",
-      "#FF8533",
-      "#FFAD66"
+      "#ff8033",
+      "#cc6633",
+      "#ff6633",
+      "#ff856e",
     ];
 
     // Pie chart config
     const pieCtx = document.getElementById('pieChart').getContext('2d');
     new Chart(pieCtx, {
-      type: 'pie',
-      data: {
-        labels: pieLabels,
-        datasets: [{
-          data: pieData,
-          backgroundColor: pieColors.slice(0, pieLabels.length),
-          borderColor: '#fff',
-          borderWidth: 1
-        }]
+  type: 'pie',
+  data: {
+    labels: pieLabels,
+    datasets: [{
+      data: pieData,
+      backgroundColor: pieColors.slice(0, pieLabels.length),
+      borderColor: '#fff',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false  // hide legend
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' },
-          title: {
-            display: true,
-            text: `Gross Electricity Generation by Fuel in ${latestYear} (Mtoe)`
-          }
-        }
+      title: {
+        display: true,
+        text: `Gross Electricity Generation by Fuel in ${latestYear} (Mtoe)`
       }
-    });
+    }
+  }
+});
+
 
     let fuelChartInstance = null;
 

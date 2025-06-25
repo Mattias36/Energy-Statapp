@@ -10,5 +10,5 @@ urlpatterns = [
     path("categories/<int:category_id>/", views.category_detail, name="category_detail"),
     path('heatmap/', views.heatmap_page_view, name='heatmap'),
     path('heatmap-data/', views.heatmap_data_view, name='heatmap-data'),
-
+    path("heat-insight/<str:country_code>/", views.heat_insight_view, name="heat-insight"),
 ]
