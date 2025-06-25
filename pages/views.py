@@ -13,27 +13,29 @@ import json
 
 def home(request):
     
-    top6 = (
-        EnergyData.objects
-        .filter(
-            category__domain__name="Energy Balance",
-            category__name="Production",
-            year=2021
-        )
-        .values('country__code', 'country__name')
-        .annotate(total_value=Sum('value'))
-        .order_by('-total_value')[:6]
-    )
+    top6_by_year = {}
 
-    top6_countries = [
-    {
-        'code': row['country__code'],
-        'name': row['country__name'],
-        'rank': i + 1,
-        'value': round(row['total_value'], 2)
-    }
-    for i, row in enumerate(top6)
-]
+    for year in range(2021, 1999, -1):
+        top6 = (
+            EnergyData.objects
+            .filter(
+                category__domain__name="Energy Balance",
+                category__name="Production",
+                year=year
+            )
+            .values('country__code', 'country__name')
+            .annotate(total_value=Sum('value'))
+            .order_by('-total_value')[:6]
+        )
+        top6_by_year[year] = [
+            {
+                'code': row['country__code'],
+                'name': row['country__name'],
+                'rank': i + 1,
+                'value': round(row['total_value'], 2)
+            }
+            for i, row in enumerate(top6)
+        ]
 
     # dane do wykresu (losowo 10 krajów)
     countries = list(Country.objects.values_list('name', flat=True))
@@ -58,7 +60,7 @@ def home(request):
     }
 
     return render(request, "pages/home.html", {
-        'top6_countries': top6_countries,
+        'top6_by_year': json.dumps(top6_by_year, cls=DjangoJSONEncoder),
         'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder)
     })
 
@@ -187,6 +189,7 @@ def country_view(request, country_code):
         'countries': countries,
         # full name for details.html "selected_country" par.
         'selected_country': selected_country.name,
+        'selected_country_code': selected_country.code,
         'selected_category': data[0].category if data else None,
         'table': table,
         'years': years,
@@ -325,3 +328,117 @@ def heatmap_data_view(request):
 
 def heatmap_page_view(request):
     return render(request, "pages/heatmap.html")
+
+
+def heat_insight_view(request, country_code):
+    year = int(request.GET.get("year", 2020))
+
+    try:
+        category = EnergyCategory.objects.get(name="Gross Heat Generation [PJ]")
+    except EnergyCategory.DoesNotExist:
+        return JsonResponse({"error": "Category not found"}, status=404)
+
+    # total heat descending
+    ranking_qs = EnergyData.objects.filter(category=category, year=year).values(
+        'country__name', 'country__code').annotate(total_heat=Sum('value')).order_by('-total_heat')
+
+    ranking = list(ranking_qs)
+
+    #  index of requested country
+    index = next((i for i, entry in enumerate(ranking) if entry['country__code'] == country_code), None)
+    if index is None:
+        return JsonResponse({"error": "Country data not found in ranking"}, status=404)
+
+    top_3 = ranking[:3]
+
+    neighbors_count = 2
+    start = max(3, index - neighbors_count)
+    end = index + neighbors_count + 1
+    neighbors = ranking[start:end]
+    neighbors = [n for n in neighbors if n not in top_3]
+
+    country_entry = ranking[index]
+
+    # rank to all entries ---> list rank
+    full_list = []
+    for i, entry in enumerate(ranking):
+        full_list.append({
+            'rank': i + 1,
+            'country__name': entry['country__name'],
+            'country__code': entry['country__code'],
+            'total_heat': entry['total_heat'],
+        })
+
+    # Insight text
+    country_total = country_entry['total_heat']
+    insight = (
+        f"In {year}, {country_entry['country__name']} generated {round(country_total, 2)} PJ of heat energy. "
+        f"It ranks {index + 1} among all countries in this category."
+    )
+
+    return JsonResponse({
+        "year": year,
+        "category": category.name,
+        "insight": insight,
+        "ranking": {
+            "top_3": top_3,
+            "country_index": index + 1,
+            "country_entry": country_entry,
+            "neighbors": neighbors,
+            "full_list": full_list,
+        }
+    })
+
+
+def rankings_view(request):
+    categories = EnergyCategory.objects.all()
+    selected_id = request.GET.get("category_id")
+    selected_year = request.GET.get("year", "summary")  # "summary" = sumaryczne 2000–2021
+    rankings = []
+    unit = None
+
+    if selected_id:
+        try:
+            selected_category = EnergyCategory.objects.get(id=selected_id)
+        except EnergyCategory.DoesNotExist:
+            selected_category = None
+    else:
+        selected_category = EnergyCategory.objects.filter(name__iexact="Production").first()
+        selected_id = selected_category.id if selected_category else None
+
+    if selected_category:
+        unit_map = {
+            "Production": "Mtoe",
+            "Final energy consumption": "Mtoe",
+            "Gross Electricity Generation, by Fuel  [TWh]": "TWh",
+            "Gross Heat Generation [PJ]": "PJ"
+        }
+        unit = unit_map.get(selected_category.name, "")
+
+        queryset = EnergyData.objects.filter(category=selected_category)
+        if selected_year != "summary":
+            queryset = queryset.filter(year=int(selected_year))
+
+        data = (
+            queryset
+            .values("country__name", "country__code")
+            .annotate(total=Sum("value"))
+            .order_by("-total")
+        )
+        rankings = [
+            {
+                "name": entry["country__name"],
+                "code": entry["country__code"],
+                "total": entry["total"]
+            }
+            for entry in data
+        ]
+
+    return render(request, "pages/rankings.html", {
+        "categories": categories,
+        "selected_category": selected_category,
+        "unit": unit,
+        "rankings": rankings,
+        "selected_year": selected_year,
+        "year_range": list(range(2021, 1999, -1))
+    })

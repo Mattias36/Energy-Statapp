@@ -1,23 +1,24 @@
 .hero-section {
     position: relative;
-    height: 70vh; 
+    height: 70vh;
     width: 100%;
-    overflow: hidden;    
+    overflow: hidden;
 }
-  
+
 .hero-background {
     background-image: url("/static/images/background_image.jpg");
     background-size: cover;
     background-position: center;
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     padding-bottom: 15%;
     height: 100%;
     width: 100%;
-    opacity: 0.7; 
+    opacity: 0.7;
     z-index: 1;
 }
-  
+
 .hero-overlay {
     position: relative;
     z-index: 2;
@@ -26,13 +27,13 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    
+
 }
-  
+
 .hero-title {
     font-size: 2.5rem;
     color: white;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
     font-weight: 100;
 }
 
@@ -44,7 +45,8 @@
     justify-content: center;
     align-items: center;
     padding: 20px 0;
-    margin-top: 0;  /* <-- kluczowe */
+    margin-top: 0;
+    /* <-- kluczowe */
 }
 
 .title {
@@ -54,23 +56,24 @@
     font-size: 2rem;
     margin: 0;
 }
+
 .top-countries-section {
     text-align: center;
     padding: 2rem 1rem;
 }
 
-.top6{
+.top6 {
     font-size: 2rem;
     font-weight: 100;
 }
 
 .top-countries-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  justify-items: center;
-  max-width: 800px;
-  margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    justify-items: center;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .country-card {
@@ -79,7 +82,7 @@
     padding: 1rem;
     border-radius: 12px;
     background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -135,11 +138,11 @@
     margin-top: 0.25rem;
 }
 
-.dyanmic-chart-section {
+.dynamic-chart-section {
     padding: 40px 0;
     text-align: center;
 }
-  
+
 .dynamic-chart-title {
     font-size: 2rem;
     font-weight: 100;
@@ -154,44 +157,84 @@
     height: auto;
     margin: 0 auto;
     display: block;
-  }
-  
-.year-range-label{
+}
+
+.year-range-label {
     text-align: center;
     font-size: 1.5rem;
 }
 
-.learn-more{
+.learn-more {
     position: relative;
     text-align: center;
 }
 
-.learn-more-title{
+.learn-more-title {
     font-size: 2rem;
     font-weight: 100;
 }
 
-.learn-more a{
+.learn-more a {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
     color: #149e7e;
     font-size: 1.5rem;
     font-weight: bold;
-    
+
 }
 
-.learn-more a:hover{
+.learn-more a:hover {
     text-decoration: underline;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.5;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.top-countries-grid.fade-out {
+    animation: fadeOut 0.4s ease forwards;
+}
+
+.top-countries-grid.fade-in {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.top-countries-grid {
+    will-change: opacity, transform;
 }
 
 @media (max-width:768px) {
     .hero-section {
         position: relative;
-        height: 60vh; 
+        height: 60vh;
         width: 100%;
-        overflow: hidden;    
+        overflow: hidden;
     }
+
+    .hero-title {
+        font-size: 2rem;
+        color: white;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        font-weight: 100;
+    }
+
     .title-section {
         position: relative;
         background-color: #149e7e;
@@ -200,7 +243,7 @@
         justify-content: center;
         align-items: center;
         padding: 20px 0;
-        margin-top: 0;  
+        margin-top: 0;
     }
 
     .title {
@@ -214,8 +257,8 @@
     .top-countries-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
-      }
-    
+    }
+
     .country-card img {
         width: 100px;
     }
@@ -224,22 +267,24 @@
         font-size: 1rem;
     }
 
-    .country-name{
+    .country-name {
         font-size: 1rem;
     }
-   
+
     #dynamicChart {
         max-width: 500px;
-        max-height: 250px;
+        max-height: 500px;
         width: 100%;
         height: auto;
         margin: 0 auto;
         display: block;
-      }
+
+    }
+
 }
 
 @media (max-width: 480px) {
     .top-countries-grid {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
-  }
+}

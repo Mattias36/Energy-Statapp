@@ -43,7 +43,7 @@
     position: relative;
     cursor: help;
 }
-    
+
 .tooltip .tooltiptext {
     visibility: hidden;
     width: max-content;
@@ -62,7 +62,7 @@
     font-size: 0.75rem;
     white-space: nowrap;
 }
-    
+
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
@@ -78,16 +78,16 @@
     font-size: 14px;
     cursor: pointer;
     transition: transform 0.2s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 160px;
 }
-  
+
 .bubble:hover {
     transform: scale(1.05);
     background-color: #dde8f7;
 }
-  
+
 .bubble .tooltiptext {
     visibility: hidden;
     white-space: pre-line;
@@ -108,13 +108,14 @@
 
 .bubble:hover .tooltiptext {
     visibility: visible;
-    opacity: 1;  
+    opacity: 1;
 }
 
 
 .bubble-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 items per row */
     gap: 20px;
     justify-items: center;
     max-width: 800px;
@@ -127,7 +128,8 @@ iframe {
     left: 0;
     width: 100%;
     height: 100%;
-    border: 0; /* Remove border */
+    border: 0;
+    /* Remove border */
 }
 
 /* chat section */
@@ -136,7 +138,58 @@ iframe {
     background-color: #ffffff;
     margin: 2rem;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+#graph_type {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    width: 12vw;
+    max-width: 200px;
+    min-width: 120px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23149e7e' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+#yearRange {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #149e7e;
+    border-radius: 3px;
+    outline: none;
+}
+
+#yearRange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #12e1b1;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#yearRange::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background-color: #149e7e;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
 .form-group {
@@ -154,7 +207,7 @@ iframe {
 
 .button-group button {
     padding: 0.5rem 1rem;
-    background-color: #0057b7;
+    background-color: #149e7e;
     border: none;
     color: white;
     border-radius: 5px;
@@ -162,15 +215,189 @@ iframe {
 }
 
 .button-group button:hover {
-    background-color: #003580;
+    background-color: #149e7ebe;
 }
 
-#compareCountries {
-    width: 100%;
-    max-width: 400px;
-    padding: 0.5rem;
+#compareForm {
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+
 }
 
-  
-  
-  
+#checkboxContainer {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #ffffff;
+    margin-top: 10px;
+}
+
+#checkboxContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+#checkboxContainer::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+
+.checkbox-option {
+    margin-bottom: 8px;
+}
+
+
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #fff;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.checkbox-option:hover {
+    background-color: #f0f0f0;
+}
+
+.checkbox-option input[type="checkbox"] {
+    accent-color: #149e7e;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.electricity-insight-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 0 20px 30px 20px;
+}
+
+.specific-insight-box {
+    flex: 1;
+    max-width: 450px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.1rem;
+    line-height: 1.4;
+    background: transparent;
+    max-height: 350px;
+}
+
+.pie-chart-container {
+    flex: 1;
+    max-width: 550px;
+    height: 350px;
+}
+
+@media (max-width: 768px) {
+    .detail-wrapper {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .country-info-flex {
+        display: flex;
+        flex-direction: column;
+        /* zmiana z poziomu na pion */
+        align-items: center;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .country-flag {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .country-text {
+        order: 2;
+        font-size: large;
+        text-align: center;
+    }
+
+    .insights {
+        max-width: 100%;
+        padding: 0 1rem;
+        font-size: 0.95rem;
+    }
+
+    .bubble-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 elementy na rząd */
+        gap: 16px;
+    }
+
+    .bubble {
+        max-width: 60%;
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .bubble:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+        width: 10%;
+    }
+
+    .bubble .tooltiptext {
+        font-size: 0.4rem;
+        padding: 6px;
+        min-width: 120px;
+        bottom: 130%;
+    }
+
+    .tooltip .tooltiptext {
+        font-size: 0.7rem;
+        padding: 4px 6px;
+        max-width: 90vw;
+        white-space: normal;
+        /* pozwala zawijać tekst */
+    }
+
+    #bubble-up .tooltiptext {
+        font-size: 0.7rem;
+    }
+
+
+    #energyChart {
+        max-width: 1000px;
+        max-height: 500px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .electricity-insight-wrapper {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .specific-insight-box,
+    .pie-chart-container {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .pie-chart-container canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+
+
+}
